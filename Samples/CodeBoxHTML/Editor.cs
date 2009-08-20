@@ -85,6 +85,11 @@ namespace CodeBoxHTML
 			return Controller.Instance.Text;
 		}
 		
+		public void SetText(string text)
+		{
+			Controller.Instance.Text = text;
+		}
+		
 		#region copy, cut, paste, undo, redo, search
 		[ScriptableMemberAttribute]
 		public void Copy()
