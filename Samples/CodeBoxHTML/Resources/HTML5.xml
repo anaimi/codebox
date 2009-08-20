@@ -51,7 +51,12 @@
 		<element name="figure" description="Defines a group of media content, and their caption" />
 		<element name="footer" description="Defines a footer for a section or page" />
 		<element name="form" description="Defines a form " />
-		<element name="h1 to h6" description="Defines header 1 to header 6" />
+		<element name="h1" description="Defines header" />
+		<element name="h2" description="Defines header" />
+		<element name="h3" description="Defines header" />
+		<element name="h4" description="Defines header" />
+		<element name="h5" description="Defines header" />
+		<element name="h6" description="Defines header" />
 		<element name="head" description="Defines information about the document" />
 		<element name="header" description="Defines a header for a section or page" />
 		<element name="hr" description="Defines a horizontal rule" />
