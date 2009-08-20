@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeLexer", "Source\CodeLexer\CodeLexer.csproj", "{5A71DE4C-C4D8-4CF1-A759-001DDB43BD8C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeBox.Core", "Source\CodeBox\CodeBox.Core.csproj", "{DB22D705-5372-4455-969E-4C7FA89986F6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{3917B997-F89C-41CE-A397-B4F4DD3967D2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{8853ACF4-4285-4971-9B48-7E9EBF237E4A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeBoxHTML", "Samples\CodeBoxHTML\CodeBoxHTML.csproj", "{4D33A5EC-AA9F-4F53-A256-6F0720618B5A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5A71DE4C-C4D8-4CF1-A759-001DDB43BD8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A71DE4C-C4D8-4CF1-A759-001DDB43BD8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A71DE4C-C4D8-4CF1-A759-001DDB43BD8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A71DE4C-C4D8-4CF1-A759-001DDB43BD8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB22D705-5372-4455-969E-4C7FA89986F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB22D705-5372-4455-969E-4C7FA89986F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB22D705-5372-4455-969E-4C7FA89986F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB22D705-5372-4455-969E-4C7FA89986F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D33A5EC-AA9F-4F53-A256-6F0720618B5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D33A5EC-AA9F-4F53-A256-6F0720618B5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D33A5EC-AA9F-4F53-A256-6F0720618B5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D33A5EC-AA9F-4F53-A256-6F0720618B5A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DB22D705-5372-4455-969E-4C7FA89986F6} = {3917B997-F89C-41CE-A397-B4F4DD3967D2}
+		{5A71DE4C-C4D8-4CF1-A759-001DDB43BD8C} = {3917B997-F89C-41CE-A397-B4F4DD3967D2}
+		{4D33A5EC-AA9F-4F53-A256-6F0720618B5A} = {8853ACF4-4285-4971-9B48-7E9EBF237E4A}
+	EndGlobalSection
+EndGlobal

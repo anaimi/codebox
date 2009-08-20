@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="CodeBox.Core.Main"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Elements="clr-namespace:CodeBox.Core.Elements"
+    xmlns:SyntaxValidator1="clr-namespace:CodeBox.Core.Services.SyntaxValidator"
+    Width="960" Height="500" Background="Orange">
+	<UserControl.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="/CodeBox.Core;component/Resources/DefaultTheme.xaml" />
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</UserControl.Resources>
+		<ScrollViewer x:Name="ScrollViewerRoot" Style="{StaticResource ScrollViewerStyle}" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" Padding="0">
+		<Canvas x:Name="CanvasRoot" VerticalAlignment="Top" HorizontalAlignment="Left">
+			<Grid x:Name="GridRoot" MinWidth="940" MinHeight="480" SizeChanged="GridRoot_SizeChanged">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="30" />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+				
+				<Grid.RowDefinitions>
+					<RowDefinition Height="0" />
+					<RowDefinition />
+				</Grid.RowDefinitions>
+				
+				<TextBox x:Name="textBox" Grid.Column="1" Grid.Row="0" Height="0" Width="0" AcceptsReturn="True"></TextBox>
+				
+				<Border Grid.Column="0" Grid.Row="1" Background="#FFEEEEEE">
+					<StackPanel x:Name="numberPanel">
+						<Elements:Number />
+					</StackPanel>
+				</Border>
+				
+				<Elements:Paper x:Name="paper" Grid.Column="1" Grid.Row="1" Background="White" Orientation="Vertical">
+					<Elements:PaperLine />
+				</Elements:Paper>
+			</Grid>
+			
+			<SyntaxValidator1:ErrorTooltip x:Name="ErrorTooltip" Visibility="Collapsed" />
+			
+		</Canvas>
+    </ScrollViewer>
+</UserControl>

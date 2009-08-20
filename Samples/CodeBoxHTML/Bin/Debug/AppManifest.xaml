@@ -1,0 +1,8 @@
+﻿<Deployment xmlns="http://schemas.microsoft.com/client/2007/deployment" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" EntryPointAssembly="CodeBoxHTML" EntryPointType="CodeBoxHTML.App" RuntimeVersion="3.0.40624.0">
+  <Deployment.Parts>
+    <AssemblyPart x:Name="CodeBoxHTML" Source="CodeBoxHTML.dll" />
+    <AssemblyPart x:Name="CodeBox.CodeLexer" Source="CodeBox.CodeLexer.dll" />
+    <AssemblyPart x:Name="CodeBox.Core" Source="CodeBox.Core.dll" />
+    <AssemblyPart x:Name="System.Xml.Linq" Source="System.Xml.Linq.dll" />
+  </Deployment.Parts>
+</Deployment>

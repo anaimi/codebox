@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<HTML5>
+	<!--
+		HTML5, references:
+			http://www.w3schools.com/tags/html5.asp
+			http://www.w3schools.com/tags/html5_ref_standardattributes.asp
+			http://www.w3schools.com/tags/html5_ref_eventattributes.asp
+		
+		TO DO:
+			Add to tag-specific attributes, i.e. a => href, img => alt, etc
+	-->
+	<elements>
+		<element name="a" description="Defines a hyperlink">
+			<attribute name="href" value="URL" description="Specifies the target URL" />
+		</element>
+		<element name="abbr" description="Defines an abbreviation" />
+		<element name="address" description="Defines an address element" />
+		<element name="area" description="Defines an area inside an image map" />
+		<element name="article" description="Defines an article" />
+		<element name="aside" description="Defines content aside from the page content" />
+		<element name="audio" description="Defines sound content" />
+		<element name="b" description="Defines bold text" />
+		<element name="base" description="Defines a base URL for all the links in a page" />
+		<element name="bdo" description="Defines the direction of text display" />
+		<element name="blockquote" description="Defines a long quotation" />
+		<element name="body" description="Defines the body element" />
+		<element name="br" description="Inserts a single line break" />
+		<element name="button" description="Defines a push button" />
+		<element name="canvas" description="Defines graphics" />
+		<element name="caption" description="Defines a table caption" />
+		<element name="cite" description="Defines a citation" />
+		<element name="code" description="Defines computer code text" />
+		<element name="col" description="Defines attributes for table columns " />
+		<element name="colgroup" description="Defines groups of table columns" />
+		<element name="command" description="Defines a command button" />
+		<element name="datagrid" description="Defines data in a tree-list" />
+		<element name="datalist" description="Defines a dropdown list" />
+		<element name="datatemplate" description="Defines a data template" />
+		<element name="dd" description="Defines a definition description" />
+		<element name="del" description="Defines deleted text" />
+		<element name="details" description="Defines details of an element" />
+		<element name="dialog" description="Defines a dialog (conversation)" />
+		<element name="div" description="Defines a section in a document" />
+		<element name="dfn" description="Defines a definition term" />
+		<element name="dl" description="Defines a definition list" />
+		<element name="dt" description="Defines a definition term" />
+		<element name="em" description="Defines emphasized text " />
+		<element name="embed" description="Defines external interactive content or plugin" />
+		<element name="eventsource" description="Defines a target for events sent by a server" />
+		<element name="fieldset" description="Defines a fieldset" />
+		<element name="figure" description="Defines a group of media content, and their caption" />
+		<element name="footer" description="Defines a footer for a section or page" />
+		<element name="form" description="Defines a form " />
+		<element name="h1 to h6" description="Defines header 1 to header 6" />
+		<element name="head" description="Defines information about the document" />
+		<element name="header" description="Defines a header for a section or page" />
+		<element name="hr" description="Defines a horizontal rule" />
+		<element name="html" description="Defines an html document" />
+		<element name="i" description="Defines italic text" />
+		<element name="iframe" description="Defines an inline sub window (frame)" />
+		<element name="img" description="Defines an image">
+			<attribute name="alt" value="text" description="Specifies alternative text format to be displayed when the image is not available" />
+		</element>
+		<element name="input" description="Defines an input field" />
+		<element name="ins" description="Defines inserted text" />
+		<element name="kbd" description="Defines keyboard text" />
+		<element name="label" description="Defines a label for a form control" />
+		<element name="legend" description="Defines a title in a fieldset" />
+		<element name="li" description="Defines a list item" />
+		<element name="link" description="Defines a resource reference" />
+		<element name="mark" description="Defines marked text" />
+		<element name="map" description="Defines an image map " />
+		<element name="menu" description="Defines a menu list" />
+		<element name="meta" description="Defines meta information" />
+		<element name="meter" description="Defines measurement within a predefined range" />
+		<element name="nav" description="Defines navigation links" />
+		<element name="nest" description="Defines a nestingpoint in a datatemplate" />
+		<element name="noscript" description="Defines a noscript section" />
+		<element name="object" description="Defines an embedded object" />
+		<element name="ol" description="Defines an ordered list" />
+		<element name="optgroup" description="Defines an option group" />
+		<element name="option" description="Defines an option in a drop-down list" />
+		<element name="output" description="Defines some types of output" />
+		<element name="p" description="Defines a paragraph" />
+		<element name="param" description="Defines a parameter for an object" />
+		<element name="pre" description="Defines preformatted text" />
+		<element name="progress" description="Defines progress of a task of any kind" />
+		<element name="q" description="Defines a short quotation" />
+		<element name="rule" description="Defines the rules for updating a template" />
+		<element name="samp" description="Defines sample computer code" />
+		<element name="script" description="Defines a script">
+			<attribute name="type" value="'text/javascript', 'text/css', etc" description="Specifies the type of the script" />
+		</element>
+		<element name="section" description="Defines a section" />
+		<element name="select" description="Defines a selectable list" />
+		<element name="small" description="Defines small text" />
+		<element name="source" description="Defines media resources" />
+		<element name="span" description="Defines a section in a document" />
+		<element name="strong" description="Defines strong text" />
+		<element name="style" description="Defines a style definition" />
+		<element name="sub" description="Defines subscripted text" />
+		<element name="sup" description="Defines superscripted text" />
+		<element name="table" description="Defines a table" />
+		<element name="tbody" description="Defines a table body" />
+		<element name="td" description="Defines a table cell" />
+		<element name="textarea" description="Defines a text area" />
+		<element name="tfoot" description="Defines a table footer" />
+		<element name="th" description="Defines a table header" />
+		<element name="thead" description="Defines a table header" />
+		<element name="time" description="Defines a date/time" />
+		<element name="title" description="Defines the document title" />
+		<element name="tr" description="Defines a table row" />
+		<element name="ul" description="Defines an unordered list" />
+		<element name="var" description="Defines a variable" />
+		<element name="video" description="Defines a video" />
+	</elements>
+	<attributes>
+		<attribute name="class" value="classname" description="Specifies a classname for an element (used to specify a class in a style sheet)" />
+		<attribute name="contenteditable" value="TRUE" description="Specifies whether or not a user is allowed to edit the content" />
+		<attribute name="contextmenu" value="menu_id" description="Specifies the context menu for an element" />
+		<attribute name="dir" value="ltr" description="Specifies the text direction for the content in an element" />
+		<attribute name="draggable" value="TRUE" description="Specifies whether or not a user is allowed to drag an element" />
+		<attribute name="id" value="id" description="Specifies a unique id for an element" />
+		<attribute name="irrelevant" value="TRUE" description="Specifies whether or not a element is irrelevant. An irrelevant element is not displayed" />
+		<attribute name="lang" value="language_code" description="Specifies a language code for the content in an element. Language code reference" />
+		<attribute name="ref" value="URL / id" description="Specifies a reference to another document / another part of a document (use only if the template attribute is set)" />
+		<attribute name="registrationmark" value="reg_mark" description="Specifies a registration mark for an element" />
+		<attribute name="style" value="style_definition" description="Specifies an inline style for an element" />
+		<attribute name="tabindex" value="number" description="Specifies the tab order of an element" />
+		<attribute name="template" value="URL / id" description="Specifies a reference to another document / another part of the document that should be applied to an element" />
+		<attribute name="title" value="text" description="Specifies extra information about an element" />
+		<attribute name="onabort" value="script" description="Script to be run on an abort event" />
+		<attribute name="onbeforeonload" value="script" description="Script to be run before an element is loaded" />
+		<attribute name="onblur" value="script" description="Script to be run when an element loses focus" />
+		<attribute name="onchange" value="script" description="Script to be run when an element changes" />
+		<attribute name="onclick" value="script" description="Script to be run on a mouse click" />
+		<attribute name="oncontextmenu" value="script" description="Script to be run when a context menu is triggered" />
+		<attribute name="ondblclick" value="script" description="Script to be run on a mouse double-click" />
+		<attribute name="ondrag" value="script" description="Script to be run when an element is dragged" />
+		<attribute name="ondragend" value="script" description="Script to be run at the end of a drag operation" />
+		<attribute name="ondragenter" value="script" description="Script to be run when an element has been dragged to a valid drop target" />
+		<attribute name="ondragleave" value="script" description="Script to be run when an element leaves a valid drop target" />
+		<attribute name="ondragover" value="script" description="Script to be run when an element is being dragged over a valid drop target" />
+		<attribute name="ondragstart" value="script" description="Script to be run at the start of a drag operation" />
+		<attribute name="ondrop" value="script" description="Script to be run when dragged element is being dropped" />
+		<attribute name="onerror" value="script" description="Script to be run when an error occurs during the loading of an element" />
+		<attribute name="onfocus" value="script" description="Script to be run when an element gets focus" />
+		<attribute name="onkeydown" value="script" description="Script to be run when a key is pressed" />
+		<attribute name="onkeypress" value="script" description="Script to be run when a key is pressed and released" />
+		<attribute name="onkeyup" value="script" description="Script to be run when a key is released" />
+		<attribute name="onload" value="script" description="Script to be run when a document loads" />
+		<attribute name="onmessage" value="script" description="Script to be run when a message event is being triggered" />
+		<attribute name="onmousedown" value="script" description="Script to be run when a mouse button is pressed" />
+		<attribute name="onmousemove" value="script" description="Script to be run when the mouse pointer moves" />
+		<attribute name="onmouseover" value="script" description="Script to be run when the mouse pointer moves over an element" />
+		<attribute name="onmouseout" value="script" description="Script to be run when the mouse pointer moves out of an element" />
+		<attribute name="onmouseup" value="script" description="Script to be run when a mouse button is released" />
+		<attribute name="onmousewheel" value="script" description="Script to be run when the mouse wheel is being rotated" />
+		<attribute name="onresize" value="script" description="Script to be run when an element is being resized" />
+		<attribute name="onscroll" value="script" description="Script to be run when an element's scrollbar is scrolled" />
+		<attribute name="onselect" value="script" description="Script to be run when an element is selected" />
+		<attribute name="onsubmit" value="script" description="Script to be run when a form is submitted" />
+		<attribute name="onunload" value="script" description="Script to be run when a document unloads" />
+	</attributes>
+</HTML5>

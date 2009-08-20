@@ -1,0 +1,15 @@
+C:\Users\Ahmad\Desktop\Algorithmatic\Silverlight\CodeLexer\Bin\Debug\CodeBox.CodeLexer.dll
+C:\Users\Ahmad\Desktop\Algorithmatic\Silverlight\CodeLexer\Bin\Debug\CodeBox.CodeLexer.pdb
+C:\Users\Ahmad\Desktop\Algorithmatic\Silverlight\CodeLexer\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Ahmad\Desktop\Algorithmatic\Silverlight\CodeLexer\obj\Debug\CodeBox.CodeLexer.dll
+C:\Users\Ahmad\Desktop\Algorithmatic\Silverlight\CodeLexer\obj\Debug\CodeBox.CodeLexer.pdb
+C:\Users\Ahmad\Desktop\CodeBox\CodeLexer\Bin\Debug\CodeBox.CodeLexer.dll
+C:\Users\Ahmad\Desktop\CodeBox\CodeLexer\Bin\Debug\CodeBox.CodeLexer.pdb
+C:\Users\Ahmad\Desktop\CodeBox\CodeLexer\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Ahmad\Desktop\CodeBox\CodeLexer\obj\Debug\CodeBox.CodeLexer.dll
+C:\Users\Ahmad\Desktop\CodeBox\CodeLexer\obj\Debug\CodeBox.CodeLexer.pdb
+C:\Users\Ahmad\Desktop\CodeBox\Source\CodeLexer\Bin\Debug\CodeBox.CodeLexer.dll
+C:\Users\Ahmad\Desktop\CodeBox\Source\CodeLexer\Bin\Debug\CodeBox.CodeLexer.pdb
+C:\Users\Ahmad\Desktop\CodeBox\Source\CodeLexer\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Ahmad\Desktop\CodeBox\Source\CodeLexer\obj\Debug\CodeBox.CodeLexer.dll
+C:\Users\Ahmad\Desktop\CodeBox\Source\CodeLexer\obj\Debug\CodeBox.CodeLexer.pdb

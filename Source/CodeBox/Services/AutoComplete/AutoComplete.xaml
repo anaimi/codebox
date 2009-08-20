@@ -1,0 +1,14 @@
+﻿<UserControl x:Class="CodeBox.Core.Services.AutoComplete.AutoCompleteService"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:AutoComplete="clr-namespace:CodeBox.Core.Services.AutoComplete"
+    >
+	<ListBox x:Name="listBox" BorderThickness="1" MinHeight="64" MinWidth="64" MaxHeight="200" MaxWidth="240" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible">
+		<ListBoxItem x:Name="loadingIndicator" Visibility="Collapsed" Tag="Keep">
+			<StackPanel Orientation="Vertical" Margin="15">
+				<TextBlock x:Name="tbLoadingText" Canvas.Top="18" Width="64" TextAlignment="Center">loading</TextBlock>
+				<TextBlock x:Name="tbLoadingDots" Canvas.Top="25" Width="64"  TextAlignment="Center">...</TextBlock>
+			</StackPanel>
+		</ListBoxItem>
+	</ListBox>
+</UserControl>
