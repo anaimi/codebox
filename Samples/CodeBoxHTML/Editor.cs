@@ -9,9 +9,11 @@ using CodeBox.Core;
 using CodeBox.Core.Services;
 using CodeBoxHTML.Services;
 using CodeBoxHTML.Controls;
+using System.Windows.Browser;
 
 namespace CodeBoxHTML
 {
+	[ScriptableTypeAttribute]
 	public class Editor
 	{
 		#region instance
@@ -77,6 +79,49 @@ namespace CodeBoxHTML
 			// do we have a backup? if yes, load it
 			Recovery.Instance.LoadBackupIfAvailable();
 		}
+		
+		public string GetText()
+		{
+			return Controller.Instance.Text;
+		}
+		
+		#region copy, cut, paste, undo, redo, search
+		[ScriptableMemberAttribute]
+		public void Copy()
+		{
+			Controller.Instance.Copy();
+		}
+
+		[ScriptableMemberAttribute]		
+		public void Cut()
+		{
+			Controller.Instance.Cut();
+		}
+
+		[ScriptableMemberAttribute]
+		public void Paste()
+		{
+			Controller.Instance.Paste();
+		}
+		
+		[ScriptableMemberAttribute]
+		public void Undo()
+		{
+			UndoRedo.Instance.Undo();
+		}
+
+		[ScriptableMemberAttribute]
+		public void Redo()
+		{
+			UndoRedo.Instance.Redo();
+		}
+		
+		[ScriptableMemberAttribute]
+		public void Search(string query)
+		{
+			Controller.Instance.Search(query);
+		}
+		#endregion
 		
 		private Stream GetResourceStream(string name)
 		{
