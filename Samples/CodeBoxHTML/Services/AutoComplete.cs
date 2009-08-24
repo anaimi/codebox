@@ -30,9 +30,11 @@ namespace CodeBoxHTML.Services
 		{
 			// read current configuration from XML
 			HTMLElements = (from element in html5.Root.Element("elements").Descendants()
+							where element.Name.LocalName.Equals("element")
 			                select CreateHTMLElement(element)).ToList();
 
 			GlobalHTMLAttributes = (from attribute in html5.Root.Element("attributes").Descendants()
+									where attribute.Name.LocalName.Equals("attribute")
 									select CreateHTMLAttribute(attribute)).ToList();
 			
 			// populate list by default with elements
@@ -235,8 +237,8 @@ namespace CodeBoxHTML.Services
 			
 			if (_listState == AutoCompleteListState.Elements)
 			{
-				title = HTMLElements[index].Name;
-				body = HTMLElements[index].Description;
+				title = HTMLElements[index - 1].Name;
+				body = HTMLElements[index - 1].Description;
 			}
 			else if (_listState == AutoCompleteListState.Attributes)
 			{
