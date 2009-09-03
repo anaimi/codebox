@@ -22,14 +22,15 @@ namespace CodeBox.CodeLexer
 			
 		}
 		
+		/// <summary>
+		/// Creates a new token list by cloning outerTokens with a specified range (range is exclusive, not inclusive)
+		/// </summary>
 		public TokenList(TokenList outerTokens, int fromToken, int toToken)
 		{
-			outerTokens.currentTokenIndex = fromToken;
-
-			for (; outerTokens.currentTokenIndex < toToken; )
+			// do copy
+			for (var i = fromToken; fromToken < toToken; fromToken++)
 			{
-				tokens.Add(outerTokens.Next());
-				outerTokens.Consume();
+				tokens.Add(outerTokens.tokens[fromToken]);
 			}
 		}
 
