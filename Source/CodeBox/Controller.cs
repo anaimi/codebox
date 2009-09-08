@@ -161,7 +161,7 @@ namespace CodeBox.Core
 			int line = Paper.Line;
 			int position = Paper.Position;
 			PaperLine pLine = Paper.CurrentLine;
-
+			
 			// add text to the current position of the caret (or _line and _position)
 			foreach (char c in text)
 			{
@@ -172,6 +172,8 @@ namespace CodeBox.Core
 					pLine = new PaperLine();
 					Paper.Children.Insert(line, pLine);
 				}
+				else if (c == '\r') // becuase nobody like \r
+					continue;
 				else
 				{
 					position++;
