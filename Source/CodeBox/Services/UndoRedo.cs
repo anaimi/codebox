@@ -7,9 +7,9 @@ namespace CodeBox.Core.Services
 {
 	public class UndoRedo : IService
 	{
-		private const double PAUSE_TO_STORE = 2.0;
+		private const double PAUSE_TO_STORE = 1.5;
 		
-		#region singleton instantiation
+		#region instance
 		private static UndoRedo _instance;
 		public static UndoRedo Instance
 		{
@@ -24,7 +24,7 @@ namespace CodeBox.Core.Services
 
 		private UndoRedo()
 		{
-			
+
 		}
 		#endregion
 		
@@ -87,6 +87,23 @@ namespace CodeBox.Core.Services
 			timer = new DispatcherTimer();
 			timer.Interval = TimeSpan.FromSeconds(PAUSE_TO_STORE);
 			timer.Tick += AddState;
+
+			Controller.Instance.OnTextChanged += SaveWhenReady;
+			
+			SaveWhenReady();
+		}
+		
+		public void SaveWhenReady()
+		{
+			if (timer.IsEnabled)
+			{
+				timer.Stop();
+				timer.Start();
+			}
+			else
+			{
+				timer.Start();
+			}
 		}
 	}
 
