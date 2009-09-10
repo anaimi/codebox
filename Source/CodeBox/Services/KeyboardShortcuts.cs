@@ -507,20 +507,21 @@ namespace CodeBox.Core.Services
 			#endregion
 
 			#region ctrl + V
-			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyUp, Key.V, e => {
-				 if (!Controller.Instance.IsEditable)
-					 return KeyboardBubbling.Continue;
+			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyUp, Key.V, e =>
+			{
+				if (!Controller.Instance.IsEditable)
+					return KeyboardBubbling.Continue;
 
-				 if (!Controller.Instance.IsCtrlDown)
-					 return KeyboardBubbling.Continue;
+				if (!Controller.Instance.IsCtrlDown)
+					return KeyboardBubbling.Continue;
 
-				 if (AutoCompleteService.Instance.HasFocus)
-					 return KeyboardBubbling.Continue;
+				if (AutoCompleteService.Instance.HasFocus)
+					return KeyboardBubbling.Continue;
 
-				 Controller.Instance.Paste(e);
+				Controller.Instance.Paste(e);
 
-				 return KeyboardBubbling.Continue;
-			 });
+				return KeyboardBubbling.Continue;
+			});
 			#endregion
 
 			#region ctrl + Z

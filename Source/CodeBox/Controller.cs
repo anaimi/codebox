@@ -18,6 +18,8 @@ namespace CodeBox.Core
 	
 	public class Controller
 	{
+		private const double WAIT_BEFORE_PARSING = 0.5;
+		
 		public Canvas RootCanvas { get; private set; }
 		public Paper Paper { get; private set; }
 		public StackPanel NumberPanel { get; private set; }
@@ -45,7 +47,7 @@ namespace CodeBox.Core
 		public List<IService> Services;
 
 		private TextBox textBox;
-		private DispatcherTimer textBoxTimer;
+		private DispatcherTimer parsingTimer;
 		private List<Character> searchText;
 		private Dictionary<Key, List<Func<KeyEventArgs, KeyboardBubbling>>> onKeyDown;
 		private Dictionary<Key, List<Func<KeyEventArgs, KeyboardBubbling>>> onKeyUp;
@@ -58,23 +60,27 @@ namespace CodeBox.Core
 			get { return instance; }
 		}
 
-		public static Controller SetInstance(Canvas rootCanvas, Paper paper, StackPanel numberPanel, TextBox textBox, DispatcherTimer textBoxTimer)
+		public static Controller SetInstance(Canvas rootCanvas, Paper paper, StackPanel numberPanel, TextBox textBox)
 		{
-			instance = new Controller(rootCanvas, paper, numberPanel, textBox, textBoxTimer);
+			instance = new Controller(rootCanvas, paper, numberPanel, textBox);
 			return instance;
 		}
 		
-		private Controller(Canvas rootCanvas, Paper paper, StackPanel numberPanel, TextBox textBox, DispatcherTimer textBoxTimer)
+		private Controller(Canvas rootCanvas, Paper paper, StackPanel numberPanel, TextBox textBox)
 		{
 			RootCanvas = rootCanvas;
 			Paper = paper;
 			NumberPanel = numberPanel;
 			this.textBox = textBox;
-			this.textBoxTimer = textBoxTimer;
-			
+						
 			Services = new List<IService>();
 			instance = this;
 			paper.UpdateCaretPosition();
+
+			// set parsing timer
+			parsingTimer = new DispatcherTimer();
+			parsingTimer.Interval = TimeSpan.FromSeconds(WAIT_BEFORE_PARSING);
+			parsingTimer.Tick += (o, e) => ParseAndCallObservers();
 			
 			// reset paper
 			paper.Children.Clear();
@@ -206,15 +212,11 @@ namespace CodeBox.Core
 			var keys = Keyboard.Modifiers;
 			
 			IsShiftDown = (keys & ModifierKeys.Shift) != 0;
-			IsCtrlDown = (keys & ModifierKeys.Apple) != 0;
-			IsCtrlDown = (keys & ModifierKeys.Control) != 0;
+			IsCtrlDown = ((keys & ModifierKeys.Control) != 0 || (keys & ModifierKeys.Apple) != 0);
 			
-			if (IsCtrlDown)
-				textBoxTimer.Stop();
-
 			if (!onKeyDown.ContainsKey(e.Key))
 				return;
-
+			
 			foreach (var f in onKeyDown[e.Key])
 			{
 				if (f.Invoke(e) == KeyboardBubbling.Stop)
@@ -230,18 +232,11 @@ namespace CodeBox.Core
 			var keys = Keyboard.Modifiers;
 
 			IsShiftDown = (keys & ModifierKeys.Shift) != 0;
-			IsCtrlDown = (keys & ModifierKeys.Apple) != 0;
-			IsCtrlDown = (keys & ModifierKeys.Control) != 0;
-
-			if (!IsCtrlDown)
-			{
-				textBox.Text = "";
-				textBoxTimer.Start();
-			}
-
+			IsCtrlDown = ((keys & ModifierKeys.Control) != 0 || (keys & ModifierKeys.Apple) != 0);
+			
 			if (!onKeyUp.ContainsKey(e.Key))
 				return;
-
+			
 			foreach (var f in onKeyUp[e.Key])
 			{
 				if (f.Invoke(e) == KeyboardBubbling.Stop)
@@ -289,14 +284,28 @@ namespace CodeBox.Core
 		
 		public void TextChanged()
 		{
+			if (parsingTimer.IsEnabled)
+			{
+				parsingTimer.Stop();
+				System.Diagnostics.Debug.WriteLine("Restarted");
+			}
+
+			parsingTimer.Start();
+		}
+		
+		public void ParseAndCallObservers()
+		{
+			parsingTimer.Stop();
+			System.Diagnostics.Debug.WriteLine("Called");
+			
 			// generate new token list
 			TokenChars = new List<TokenChars>();
 			TokenList = new TokenList(Text, Configuration.Keywords.ToList());
 			TokenBeforeCaret = GeTokenBeforeCaret();
-			
+
 			// populate token chars for each token
 			TokenList.Tokens.ForEach(t => TokenChars.Add(new TokenChars(t)));
-			
+
 			// call observers
 			if (OnTextChanged != null)
 				OnTextChanged();

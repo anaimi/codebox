@@ -8,20 +8,13 @@ namespace CodeBox.Core
 {
 	public partial class Main
 	{
-		private DispatcherTimer textBoxTimer;
-
 		public Main()
 		{
 			InitializeComponent();
 
-			// textBoxTimer
-			textBoxTimer = new DispatcherTimer();
-			textBoxTimer.Interval = TimeSpan.FromMilliseconds(50);
-			textBoxTimer.Tick += textboxReaderTick;
-			textBoxTimer.Start();
-			
-			// controller and dependencies
-			Controller.SetInstance(CanvasRoot, paper, numberPanel, textBox, textBoxTimer);
+			textBox.TextChanged += TextChanged;
+
+			Controller.SetInstance(CanvasRoot, paper, numberPanel, textBox);
 			
 			Loaded += PageLoaded;
 		}
@@ -57,21 +50,20 @@ namespace CodeBox.Core
 			paper.Children.Add(new PaperLine());
 		}
 
-		private void textboxReaderTick(object sender, EventArgs e)
+		private void TextChanged(object sender, EventArgs e)
 		{
+			if (Controller.Instance.IsCtrlDown)
+			{
+				textBox.Text = "";
+				return;
+			}
+			
 			textBox.Text = textBox.Text.Replace("\r", "");
 
 			if (textBox.Text == "" || textBox.Text == "\n")
 				return;
 
-			if (Controller.Instance.IsCtrlDown)
-			{
-				Controller.Instance.AddText(textBox.Text);
-			}
-			else
-			{
-				Controller.Instance.AddChar(textBox.Text[0]);
-			}
+			Controller.Instance.AddText(textBox.Text);
 
 			textBox.Text = "";
 		}
