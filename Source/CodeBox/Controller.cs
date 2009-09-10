@@ -203,22 +203,14 @@ namespace CodeBox.Core
 		public void KeyDown(object sender, KeyEventArgs e)
 		{
 			Paper.IsMouseDown = false;
-
-			switch (e.Key)
-			{
-				case Key.Shift:
-					#region shift
-					IsShiftDown = true;
-					#endregion
-					break;
-
-				case Key.Ctrl:
-					#region ctrl
-					textBoxTimer.Stop();
-					IsCtrlDown = true;
-					#endregion
-					break;
-			}
+			var keys = Keyboard.Modifiers;
+			
+			IsShiftDown = (keys & ModifierKeys.Shift) != 0;
+			IsCtrlDown = (keys & ModifierKeys.Apple) != 0;
+			IsCtrlDown = (keys & ModifierKeys.Control) != 0;
+			
+			if (IsCtrlDown)
+				textBoxTimer.Stop();
 
 			if (!onKeyDown.ContainsKey(e.Key))
 				return;
@@ -235,22 +227,16 @@ namespace CodeBox.Core
 
 		public void KeyUp(object sender, KeyEventArgs e)
 		{
-			switch (e.Key)
+			var keys = Keyboard.Modifiers;
+
+			IsShiftDown = (keys & ModifierKeys.Shift) != 0;
+			IsCtrlDown = (keys & ModifierKeys.Apple) != 0;
+			IsCtrlDown = (keys & ModifierKeys.Control) != 0;
+
+			if (!IsCtrlDown)
 			{
-				case Key.Shift:
-					IsShiftDown = false;
-					return;
-
-				case Key.Ctrl:
-					textBox.Text = "";
-					textBoxTimer.Start();
-					IsCtrlDown = false;
-					return;
-
-				case Key.V:
-					if (IsCtrlDown)
-						textBox.Text = "";
-					break;
+				textBox.Text = "";
+				textBoxTimer.Start();
 			}
 
 			if (!onKeyUp.ContainsKey(e.Key))
