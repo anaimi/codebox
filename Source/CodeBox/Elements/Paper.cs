@@ -305,7 +305,7 @@ namespace CodeBox.Core.Elements
 				characters.ForEach(c => text.Append(c.Char));
 
 				if (i != lowerLine)
-					text.Append("\n");
+					text.Append("\r\n");
 			}
 			
 			return text.ToString();

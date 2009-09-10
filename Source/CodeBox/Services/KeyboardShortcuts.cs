@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
-using CodeBox.Core;
 using CodeBox.Core.Utilities;
 using CodeBox.Core.Elements;
 using CodeBox.Core.Services.AutoComplete;
@@ -41,7 +32,7 @@ namespace CodeBox.Core.Services
 		public void Initialize()
 		{
 			#region enter
-			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.Enter, () => {
+			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.Enter, e => {
      			if (!Controller.Instance.IsEditable)
      				return KeyboardBubbling.Continue;
 
@@ -84,7 +75,7 @@ namespace CodeBox.Core.Services
 			#endregion
 
 			#region backspace
-			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.Back, ()=> {
+			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.Back, e => {
      			if (!Controller.Instance.IsEditable)
      				return KeyboardBubbling.Continue;
 
@@ -131,7 +122,7 @@ namespace CodeBox.Core.Services
 			#endregion
 
 			#region delete
-			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.Delete, () => {
+			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.Delete, e  => {
 				if (!Controller.Instance.IsEditable)
 					return KeyboardBubbling.Continue;
 				
@@ -180,7 +171,7 @@ namespace CodeBox.Core.Services
 			#endregion
 
 			#region tab
-			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.Tab, () => {
+			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.Tab, e => {
          		if (!Controller.Instance.IsEditable)
          			return KeyboardBubbling.Continue;
 
@@ -235,7 +226,7 @@ namespace CodeBox.Core.Services
 			#endregion
 
 			#region up
-			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.Up, () => {
+			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.Up, e => {
          		// check if trying to highlight
          		if (Controller.Instance.IsShiftDown)
          		{
@@ -260,7 +251,7 @@ namespace CodeBox.Core.Services
 			#endregion
 
 			#region down
-			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.Down, () => {
+			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.Down, e => {
          		// check if trying to highlight
          		if (Controller.Instance.IsShiftDown)
          		{
@@ -285,7 +276,7 @@ namespace CodeBox.Core.Services
 			#endregion
 
 			#region left
-			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.Left, () => {
+			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.Left, e => {
          		// check if trying to highlight
          		if (Controller.Instance.IsShiftDown)
          		{
@@ -336,7 +327,7 @@ namespace CodeBox.Core.Services
 			#endregion
 
 			#region right
-			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.Right, () => {
+			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.Right, e => {
          		// check if trying to highlight
          		if (Controller.Instance.IsShiftDown)
          		{
@@ -384,90 +375,84 @@ namespace CodeBox.Core.Services
 			#endregion
 
 			#region ctrl + D (nothing selected)
-			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.D,
-												 () =>
-												 {
-													 if (!Controller.Instance.IsEditable)
-														 return KeyboardBubbling.Continue;
+			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.D, e => {
+				 if (!Controller.Instance.IsEditable)
+					 return KeyboardBubbling.Continue;
 
-													 if (!Controller.Instance.IsCtrlDown)
-														 return KeyboardBubbling.Continue;
+				 if (!Controller.Instance.IsCtrlDown)
+					 return KeyboardBubbling.Continue;
 
-													 if (Controller.Instance.Paper.HaveHighlightedText)
-														 return KeyboardBubbling.Continue;
+				 if (Controller.Instance.Paper.HaveHighlightedText)
+					 return KeyboardBubbling.Continue;
 
-													 // get text
-													 var text = Controller.Instance.Paper.CurrentLine.GetCharacters(0, Controller.Instance.Paper.CurrentLine.LastIndex).GetText();
+				 // get text
+				 var text = Controller.Instance.Paper.CurrentLine.GetCharacters(0, Controller.Instance.Paper.CurrentLine.LastIndex).GetText();
 
-													 // create new line
-													 Controller.Instance.Paper.Children.Insert(Controller.Instance.Paper.Line, new PaperLine());
-													 Controller.Instance.Paper.UpdateCaret(Controller.Instance.Paper.Line, 0);
+				 // create new line
+				 Controller.Instance.Paper.Children.Insert(Controller.Instance.Paper.Line, new PaperLine());
+				 Controller.Instance.Paper.UpdateCaret(Controller.Instance.Paper.Line, 0);
 
-													 // add text to new line
-													 Controller.Instance.AddText(text + "\n");
+				 // add text to new line
+				 Controller.Instance.AddText(text + "\n");
 
-													 return KeyboardBubbling.Continue;
-												 });
+				 return KeyboardBubbling.Continue;
+			 });
 			#endregion
 
 			#region ctrl + C (nothing selected)
-			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.C,
-												 () =>
-												 {
-													 if (!Controller.Instance.IsEditable)
-														 return KeyboardBubbling.Continue;
+			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.C, e => {
+				 if (!Controller.Instance.IsEditable)
+					 return KeyboardBubbling.Continue;
 
-													 if (!Controller.Instance.IsCtrlDown)
-														 return KeyboardBubbling.Continue;
+				 if (!Controller.Instance.IsCtrlDown)
+					 return KeyboardBubbling.Continue;
 
-													 if (Controller.Instance.Paper.HaveHighlightedText)
-														 return KeyboardBubbling.Continue;
+				 if (Controller.Instance.Paper.HaveHighlightedText)
+					 return KeyboardBubbling.Continue;
 
-													 // get text
-													 var text = Controller.Instance.Paper.CurrentLine.GetCharacters(0, Controller.Instance.Paper.CurrentLine.LastIndex).GetText();
+				 // get text
+				 var text = Controller.Instance.Paper.CurrentLine.GetCharacters(0, Controller.Instance.Paper.CurrentLine.LastIndex).GetText();
 
-													 // add to clipboard
-													 Clipboard.Instance.Copy(text + "\n");
+				 // add to clipboard
+				 Clipboard.Instance.Copy(text + "\n", e);
 
-													 return KeyboardBubbling.Continue;
-												 });
+				 return KeyboardBubbling.Continue;
+			 });
 			#endregion
 
 			#region ctrl + X (nothing selected)
-			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.X,
-												 () =>
-												 {
-													 if (!Controller.Instance.IsEditable)
-														 return KeyboardBubbling.Continue;
+			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.X, e => {
+				 if (!Controller.Instance.IsEditable)
+					 return KeyboardBubbling.Continue;
 
-													 if (!Controller.Instance.IsCtrlDown)
-														 return KeyboardBubbling.Continue;
+				 if (!Controller.Instance.IsCtrlDown)
+					 return KeyboardBubbling.Continue;
 
-													 if (Controller.Instance.Paper.HaveHighlightedText)
-														 return KeyboardBubbling.Continue;
+				 if (Controller.Instance.Paper.HaveHighlightedText)
+					 return KeyboardBubbling.Continue;
 
-													 // get text
-													 var text = Controller.Instance.Paper.CurrentLine.GetCharacters(0, Controller.Instance.Paper.CurrentLine.LastIndex).GetText();
-													 
-													 if (text == "")
-													 	return KeyboardBubbling.Continue;
-													 
-													 // remove line (if it is not the only line)
-													 if (Controller.Instance.Paper.Children.Count > 1)
-													 {
-														 Controller.Instance.Paper.Children.RemoveAt(Controller.Instance.Paper.Line);
-														 Controller.Instance.Paper.UpdateCaretPosition();
-													 }
+				 // get text
+				 var text = Controller.Instance.Paper.CurrentLine.GetCharacters(0, Controller.Instance.Paper.CurrentLine.LastIndex).GetText();
+				 
+				 if (text == "")
+				 	return KeyboardBubbling.Continue;
+				 
+				 // remove line (if it is not the only line)
+				 if (Controller.Instance.Paper.Children.Count > 1)
+				 {
+					 Controller.Instance.Paper.Children.RemoveAt(Controller.Instance.Paper.Line);
+					 Controller.Instance.Paper.UpdateCaretPosition();
+				 }
 
-													 // add to clipboard
-													 Clipboard.Instance.Copy(text + "\n");
+				 // add to clipboard
+				 Clipboard.Instance.Copy(text + "\n", e);
 
-													 return KeyboardBubbling.Continue;
-												 });
+				 return KeyboardBubbling.Continue;
+			 });
 			#endregion
 			
 			#region ctrl + A
-			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.A, () => {
+			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.A, e => {
 				 if (!Controller.Instance.IsCtrlDown)
 					 return KeyboardBubbling.Continue;
 				
@@ -481,7 +466,7 @@ namespace CodeBox.Core.Services
 			#endregion
 
 			#region ctrl + C
-			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.C, () => {
+			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.C, e => {
 				 if (!Controller.Instance.IsCtrlDown)
 					 return KeyboardBubbling.Continue;
 
@@ -491,14 +476,14 @@ namespace CodeBox.Core.Services
 				 if (AutoCompleteService.Instance.HasFocus)
 					 return KeyboardBubbling.Continue;
 
-				 Controller.Instance.Copy();
+				 Controller.Instance.Copy(e);
 
 				 return KeyboardBubbling.Continue;
 			 });
 			#endregion
 
 			#region ctrl + X
-			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.X, () => {
+			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.X, e => {
 				 if (!Controller.Instance.IsEditable)
 					 return KeyboardBubbling.Continue;
 
@@ -511,14 +496,14 @@ namespace CodeBox.Core.Services
 				 if (AutoCompleteService.Instance.HasFocus)
 					 return KeyboardBubbling.Continue;
 
-				 Controller.Instance.Cut();
+				 Controller.Instance.Cut(e);
 
 				 return KeyboardBubbling.Continue;
 			 });
 			#endregion
 
 			#region ctrl + V
-			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyUp, Key.V, () => {
+			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyUp, Key.V, e => {
 				 if (!Controller.Instance.IsEditable)
 					 return KeyboardBubbling.Continue;
 
@@ -528,14 +513,14 @@ namespace CodeBox.Core.Services
 				 if (AutoCompleteService.Instance.HasFocus)
 					 return KeyboardBubbling.Continue;
 
-				 Controller.Instance.Paste();
+				 Controller.Instance.Paste(e);
 
 				 return KeyboardBubbling.Continue;
 			 });
 			#endregion
 
 			#region ctrl + Z
-			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyUp, Key.Z, () => {
+			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyUp, Key.Z, e => {
 				 if (!Controller.Instance.IsEditable)
 					 return KeyboardBubbling.Continue;
 
@@ -552,7 +537,7 @@ namespace CodeBox.Core.Services
 			#endregion
 
 			#region ctrl + Y
-			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyUp, Key.Y, () => {
+			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyUp, Key.Y, e => {
 				 if (!Controller.Instance.IsEditable)
 					 return KeyboardBubbling.Continue;
 
@@ -572,7 +557,7 @@ namespace CodeBox.Core.Services
 			// Sometimes when a user types in "=" it is recognized as "+"
 			// This is not specific to CodeBox. It appears now and then. I cannot reproduce it consistently.
 			// Fix this if you have a better explanation.
-			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.Add, () => {
+			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.Add, e => {
          		if (Controller.Instance.IsShiftDown)
          			return KeyboardBubbling.Continue;
 

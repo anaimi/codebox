@@ -82,46 +82,41 @@ namespace CodeBox.Core.Services.AutoComplete
 			Controller.Instance.OnTextChanged += Configuration.AutoCompleter.KeyDown;
 			Controller.Instance.Paper.MouseLeftButtonDown += (e, s) => { HideList(); Controller.Instance.GetFocus(); };
 			
-			// on key Escape
-			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.Escape, () => { HideList(); return KeyboardBubbling.Stop; });
+			// on key escape
+			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.Escape, (e) => { HideList(); return KeyboardBubbling.Stop; });
 			
-			// on key Enter
-			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.Enter,
-			                                     () =>
-			                                     	{
-			                                     		if (HasFocus)
-			                                     		{
-			                                     			Select();
-			                                     			return KeyboardBubbling.Stop;
-			                                     		}
+			// on key enter
+			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.Enter, (e) => {
+         		if (HasFocus)
+         		{
+         			Select();
+         			return KeyboardBubbling.Stop;
+         		}
 
-			                                     		return KeyboardBubbling.Continue;
-			                                     	});
-			// on key Down
-			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.Down,
-												 () =>
-												 {
-													 if (HasFocus)
-													 {
-														 SelectNext();
-														 return KeyboardBubbling.Stop;
-													 }
+         		return KeyboardBubbling.Continue;
+         	});
+         	
+			// on key down
+			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.Down, (e) => {
+				 if (HasFocus)
+				 {
+					 SelectNext();
+					 return KeyboardBubbling.Stop;
+				 }
 
-													 return KeyboardBubbling.Continue;
-												 });
+				 return KeyboardBubbling.Continue;
+			 });
 
-			// on key Up
-			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.Up,
-												 () =>
-												 {
-													 if (HasFocus)
-													 {
-														 SelectPrevious();
-														 return KeyboardBubbling.Stop;
-													 }
+			// on key up
+			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.Up, (e) => {
+				 if (HasFocus)
+				 {
+					 SelectPrevious();
+					 return KeyboardBubbling.Stop;
+				 }
 
-													 return KeyboardBubbling.Continue;
-												 });
+				 return KeyboardBubbling.Continue;
+			 });
 			
 		}
 		

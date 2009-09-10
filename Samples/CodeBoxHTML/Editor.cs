@@ -94,19 +94,19 @@ namespace CodeBoxHTML
 		[ScriptableMemberAttribute]
 		public void Copy()
 		{
-			Controller.Instance.Copy();
+			Controller.Instance.Copy(null);
 		}
 
 		[ScriptableMemberAttribute]		
 		public void Cut()
 		{
-			Controller.Instance.Cut();
+			Controller.Instance.Cut(null);
 		}
 
 		[ScriptableMemberAttribute]
 		public void Paste()
 		{
-			Controller.Instance.Paste();
+			Controller.Instance.Paste(null);
 		}
 		
 		[ScriptableMemberAttribute]

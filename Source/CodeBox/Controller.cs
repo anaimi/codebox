@@ -47,8 +47,8 @@ namespace CodeBox.Core
 		private TextBox textBox;
 		private DispatcherTimer textBoxTimer;
 		private List<Character> searchText;
-		private Dictionary<Key, List<Func<KeyboardBubbling>>> onKeyDown;
-		private Dictionary<Key, List<Func<KeyboardBubbling>>> onKeyUp;
+		private Dictionary<Key, List<Func<KeyEventArgs, KeyboardBubbling>>> onKeyDown;
+		private Dictionary<Key, List<Func<KeyEventArgs, KeyboardBubbling>>> onKeyUp;
 		
 		#region instance handling
 		private static Controller instance;
@@ -81,8 +81,8 @@ namespace CodeBox.Core
 			paper.Children.Add(new PaperLine());
 			
 			// keyboard events
-			onKeyDown = new Dictionary<Key, List<Func<KeyboardBubbling>>>();
-			onKeyUp = new Dictionary<Key, List<Func<KeyboardBubbling>>>();
+			onKeyDown = new Dictionary<Key, List<Func<KeyEventArgs, KeyboardBubbling>>>();
+			onKeyUp = new Dictionary<Key, List<Func<KeyEventArgs, KeyboardBubbling>>>();
 			
 			// when MouseUp/MouseDown on number panel, inform Paper
 			numberPanel.MouseLeftButtonUp += delegate { paper.IsMouseDown = false; };
@@ -190,13 +190,13 @@ namespace CodeBox.Core
 		}
 
 		#region keyboard handling
-		public void AddKeyboardEvent(KeyboardEventType type, Key key, Func<KeyboardBubbling> callback)
+		public void AddKeyboardEvent(KeyboardEventType type, Key key, Func<KeyEventArgs, KeyboardBubbling> callback)
 		{
 			var dictionary = type == KeyboardEventType.KeyDown ? onKeyDown : onKeyUp;
 
 			if (!dictionary.ContainsKey(key))
 			{
-				dictionary.Add(key, new List<Func<KeyboardBubbling>>());
+				dictionary.Add(key, new List<Func<KeyEventArgs, KeyboardBubbling>>());
 			}
 
 			dictionary[key].Add(callback);
@@ -227,7 +227,7 @@ namespace CodeBox.Core
 
 			foreach (var f in onKeyDown[e.Key])
 			{
-				if (f.Invoke() == KeyboardBubbling.Stop)
+				if (f.Invoke(e) == KeyboardBubbling.Stop)
 				{
 					e.Handled = true;
 					break;
@@ -260,7 +260,7 @@ namespace CodeBox.Core
 
 			foreach (var f in onKeyUp[e.Key])
 			{
-				if (f.Invoke() == KeyboardBubbling.Stop)
+				if (f.Invoke(e) == KeyboardBubbling.Stop)
 				{
 					e.Handled = true;
 					break;
@@ -319,26 +319,26 @@ namespace CodeBox.Core
 		}
 		
 		#region cut, copy, paste, select all, search
-		public void Cut()
+		public void Cut(KeyEventArgs e)
 		{
 			if (!Paper.HaveHighlightedText)
 				return;
 
-			Clipboard.Instance.Copy(Paper.GetHighlightedText());
+			Clipboard.Instance.Copy(Paper.GetHighlightedText(), e);
 			Paper.RemoveHighlights();
 		}
 
-		public void Copy()
+		public void Copy(KeyEventArgs e)
 		{
 			if (!Paper.HaveHighlightedText)
 				return;
 
-			Clipboard.Instance.Copy(Paper.GetHighlightedText());
+			Clipboard.Instance.Copy(Paper.GetHighlightedText(), e);
 		}
 
-		public void Paste()
+		public void Paste(KeyEventArgs e)
 		{
-			AddText(Clipboard.Instance.Paste());
+			AddText(Clipboard.Instance.Paste(e));
 		}
 
 		public void SelectAll()

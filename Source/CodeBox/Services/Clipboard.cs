@@ -1,10 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace CodeBox.Core.Services
 {
 	public class Clipboard : IService
 	{
-		private string board = "";
+		//private string board = "";
 				
 		#region instance
 		private static Clipboard _instance;
@@ -21,25 +24,50 @@ namespace CodeBox.Core.Services
 			}
 		}
 		#endregion
+
+		private ClipboardHelper board;
 		
 		private Clipboard()
 		{
-			
+			board = new ClipboardHelper();
 		}
 		
 		public void Initialize()
 		{
 			
 		}
-		
-		public void Copy(string text)
+
+		public void Copy(string text, KeyEventArgs e)
 		{
-			board = text;
+			board.Text = text;
+			board.SelectAll();
+			board.ProcessKeyDown(e);
+			//board = text;
 		}
 
-		public string Paste()
+		public string Paste(KeyEventArgs e)
 		{
-			return board;
+			board.Text = "";
+			board.ProcessKeyDown(e);
+			return board.Text;
+		}
+		
+		private class ClipboardHelper : TextBox
+		{
+			internal ClipboardHelper()
+			{
+				AcceptsReturn = true;
+			}
+
+			internal void ProcessKeyDown(KeyEventArgs e)
+			{
+				OnKeyDown(e);
+			}
+		}
+		
+		private class ClipboardEventArgs : EventArgs
+		{
+			
 		}
 	}
 }
