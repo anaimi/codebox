@@ -376,26 +376,30 @@ namespace CodeBox.Core.Services
 
 			#region ctrl + D (nothing selected)
 			Controller.Instance.AddKeyboardEvent(KeyboardEventType.KeyDown, Key.D, e => {
-				 if (!Controller.Instance.IsEditable)
-					 return KeyboardBubbling.Continue;
+				if (!Controller.Instance.IsEditable)
+					return KeyboardBubbling.Continue;
 
-				 if (!Controller.Instance.IsCtrlDown)
-					 return KeyboardBubbling.Continue;
+				if (!Controller.Instance.IsCtrlDown)
+					return KeyboardBubbling.Continue;
 
-				 if (Controller.Instance.Paper.HaveHighlightedText)
-					 return KeyboardBubbling.Continue;
+				if (Controller.Instance.Paper.HaveHighlightedText)
+					return KeyboardBubbling.Continue;
 
-				 // get text
-				 var text = Controller.Instance.Paper.CurrentLine.GetCharacters(0, Controller.Instance.Paper.CurrentLine.LastIndex).GetText();
+				// get text
+				var text = Controller.Instance.Paper.CurrentLine.GetCharacters(0, Controller.Instance.Paper.CurrentLine.LastIndex).GetText();
 
-				 // create new line
-				 Controller.Instance.Paper.Children.Insert(Controller.Instance.Paper.Line, new PaperLine());
-				 Controller.Instance.Paper.UpdateCaret(Controller.Instance.Paper.Line, 0);
+				// set the caret at the end of the current line
+				var originalLine = Controller.Instance.Paper.Line;
+				var originalPosition = Controller.Instance.Paper.Position;
+				Controller.Instance.Paper.Position = Controller.Instance.Paper.CurrentLine.LastIndex;
 
-				 // add text to new line
-				 Controller.Instance.AddText(text + "\n");
+				// add text new line + text
+				Controller.Instance.AddText("\r\n" + text);
 
-				 return KeyboardBubbling.Continue;
+				// set caret at new line and original position
+				Controller.Instance.Paper.UpdateCaret(originalLine + 1, originalPosition);
+
+				return KeyboardBubbling.Continue;
 			 });
 			#endregion
 
@@ -414,7 +418,7 @@ namespace CodeBox.Core.Services
 				 var text = Controller.Instance.Paper.CurrentLine.GetCharacters(0, Controller.Instance.Paper.CurrentLine.LastIndex).GetText();
 
 				 // add to clipboard
-				 Clipboard.Instance.Copy(text + "\n", e);
+				 Clipboard.Instance.Copy("\r\n" + text, e);
 
 				 return KeyboardBubbling.Continue;
 			 });
@@ -445,7 +449,7 @@ namespace CodeBox.Core.Services
 				 }
 
 				 // add to clipboard
-				 Clipboard.Instance.Copy(text + "\n", e);
+				 Clipboard.Instance.Copy("\r\n" + text, e);
 
 				 return KeyboardBubbling.Continue;
 			 });
