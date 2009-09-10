@@ -172,19 +172,17 @@ namespace CodeBox.Core
 					
 					prevLine.MigrateCharacters(pLine, position + 1, prevLine.LastIndex);
 					Paper.Children.Insert(++line, pLine);
-					position = -1;
+					position = 0;
 				}
 				else if (c == '\r') // becuase nobody like \r
 					continue;
 				else
 				{
-					position++;
-					pLine.Add(new Character(c, line, position), position);
+					pLine.Add(new Character(c, line, position), position++);
 				}
 			}
 
 			// update
-			position = (position == -1) ? 0 : position;
 			Paper.UpdateCaret(line, position);
 			TextChanged();
 		}
