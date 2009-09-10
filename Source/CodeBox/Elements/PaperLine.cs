@@ -87,7 +87,7 @@ namespace CodeBox.Core.Elements
 				return;
 
 			int charIndex = GetCharIndexFromWidth(e.GetPosition(this).X);
-			paper.HighlightUpto(selfIndex, charIndex); System.Diagnostics.Debug.WriteLine("Up to: " + selfIndex);
+			paper.HighlightUpto(selfIndex, charIndex);
 		}
 
 		private void PaperLineMouseUp(object sender, MouseButtonEventArgs e)

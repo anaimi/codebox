@@ -383,7 +383,7 @@ namespace CodeBox.Core.Elements
 					pLine = (PaperLine)Children[fromLine];
 
 					fromPos = (fromLine == line) ? pos : 0;
-					toPos = (fromLine == highlightLineFrom) ? hightlightPositionFrom : pLine.LastIndex;
+					toPos = (fromLine == highlightLineFrom) ? hightlightPositionFrom - 1: pLine.LastIndex;
 
 					HighlightedBlocks.AddRange(pLine.GetCharacters(fromPos, toPos));
 				}
