@@ -50,16 +50,9 @@ namespace CodeBox.Core.Services
      			if (Controller.Instance.Paper.Position != Controller.Instance.Paper.CurrentLine.LastIndex)
      			{
      				Controller.Instance.Paper.Children.Insert(Controller.Instance.Paper.Line + 1, new PaperLine());
-     				PaperLine prevLine = Controller.Instance.Paper.CurrentLine;
-     				PaperLine line = Controller.Instance.Paper.NextLine;
-     				List<UIElement> chars = new List<UIElement>();
-     				for (int i = Controller.Instance.Paper.Position; i < prevLine.Children.Count; i++)
-     					chars.Add(prevLine.Children[i]);
-     				foreach (UIElement c in chars)
-     				{
-     					prevLine.Children.Remove(c);
-     					line.Children.Add(c);
-     				}
+     				var prevLine = Controller.Instance.Paper.CurrentLine;
+     				var newLine = Controller.Instance.Paper.NextLine;
+     				prevLine.MigrateCharacters(newLine, Controller.Instance.Paper.Position, prevLine.LastIndex);
      			}
      			else
      			{
@@ -107,18 +100,13 @@ namespace CodeBox.Core.Services
 
      			if (Controller.Instance.Paper.Position == 0)
      			{
-     				var chars = new List<UIElement>();
-     				var pos = Controller.Instance.Paper.LineAt(Controller.Instance.Paper.Line - 1).LastIndex.Equals(0) ? 0 : Controller.Instance.Paper.LineAt(Controller.Instance.Paper.Line - 1).LastIndex + 1;
-     				foreach (var element in Controller.Instance.Paper.CurrentLine.Children)
-     					chars.Add(element);
-     				foreach (var element in chars)
-     				{
-     					Controller.Instance.Paper.CurrentLine.Remove(element);
-     					Controller.Instance.Paper.PrevLine.Add(element);
-     				}
+     				Controller.Instance.Paper.RemoveCaret();
 
+     				var pos = Controller.Instance.Paper.PrevLine.LastIndex;
+					Controller.Instance.Paper.CurrentLine.MigrateCharacters(Controller.Instance.Paper.PrevLine, 0, pos);
+					
      				Controller.Instance.Paper.RemoveLine(Controller.Instance.Paper.Line);
-     				Controller.Instance.Paper.UpdateCaret(Controller.Instance.Paper.Line - 1, pos);
+     				Controller.Instance.Paper.UpdateCaret(Controller.Instance.Paper.Line - 1, pos + 1);
      			}
      			else
      			{
@@ -336,10 +324,7 @@ namespace CodeBox.Core.Services
          		}
          		else if (Controller.Instance.Paper.Position == 0 && !Controller.Instance.Paper.IsInFirstLine)
          		{
-         			int line = Controller.Instance.Paper.Line - 1;
-         			int pos = Controller.Instance.Paper.LineAt(Controller.Instance.Paper.Line - 1).LastIndex;
-         			pos = (pos == 0) ? 0 : pos + 1;
-         			Controller.Instance.Paper.UpdateCaret(line, pos);
+         			Controller.Instance.Paper.UpdateCaret(Controller.Instance.Paper.Line - 1, Controller.Instance.Paper.PrevLine.LastIndex + 1);
          		}
 
          		// update if trying to highlight

@@ -240,5 +240,22 @@ namespace CodeBox.Core.Elements
 			foreach (var c in chars)
 				Children.Remove(c);
 		}
+		
+		public void MigrateCharacters(PaperLine newLine, int fromIndex, int toIndex)
+		{
+			if (Children.Count == 0)
+				return;
+			
+			var chars = new List<UIElement>();
+			
+			for (; fromIndex <= toIndex; fromIndex++)
+				chars.Add(Children[fromIndex]);
+				
+			foreach (UIElement c in chars)
+			{
+				Children.Remove(c);
+				newLine.Children.Add(c);
+			}
+		}
 	}
 }

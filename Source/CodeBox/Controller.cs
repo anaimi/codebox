@@ -158,19 +158,21 @@ namespace CodeBox.Core
 			Paper.RemoveHighlights();
 
 			// arrange
-			int line = Paper.Line;
-			int position = Paper.Position;
-			PaperLine pLine = Paper.CurrentLine;
+			var line = Paper.Line;
+			var position = Paper.Position;
+			var pLine = Paper.CurrentLine;
 			
-			// add text to the current position of the caret (or _line and _position)
+			// add text to the current position of the caret (or _line and _position) - DO NOT use CurrentLine since current line keeps changing until Paper.UpdateCaret() is called
 			foreach (char c in text)
 			{
 				if (c == '\n')
 				{
-					line++;
-					position = -1;
+					var prevLine = Paper.LineAt(line);
 					pLine = new PaperLine();
-					Paper.Children.Insert(line, pLine);
+					
+					prevLine.MigrateCharacters(pLine, position + 1, prevLine.LastIndex);
+					Paper.Children.Insert(++line, pLine);
+					position = -1;
 				}
 				else if (c == '\r') // becuase nobody like \r
 					continue;
@@ -182,7 +184,7 @@ namespace CodeBox.Core
 			}
 
 			// update
-			position = position == -1 ? 0 : position;
+			position = (position == -1) ? 0 : position;
 			Paper.UpdateCaret(line, position);
 			TextChanged();
 		}
