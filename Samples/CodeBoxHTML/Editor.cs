@@ -10,6 +10,7 @@ using CodeBox.Core.Services;
 using CodeBoxHTML.Services;
 using CodeBoxHTML.Controls;
 using System.Windows.Browser;
+using CodeBox.Core.Elements;
 
 namespace CodeBoxHTML
 {

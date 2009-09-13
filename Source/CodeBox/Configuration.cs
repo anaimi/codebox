@@ -6,6 +6,7 @@ using System.Windows.Browser;
 using System.Windows;
 using CodeBox.Core.Services.AutoComplete;
 using System.IO;
+using CodeBox.Core.Elements;
 
 namespace CodeBox.Core
 {
@@ -86,7 +87,21 @@ namespace CodeBox.Core
 	
 	public class Debugger
 	{
-		public bool IsEnabled { get; set; }
+		private bool _isEnabled;
+		public bool IsEnabled
+		{
+			get { return _isEnabled; }
+			set
+			{
+				_isEnabled = value;
+				
+				// re-initialize numbers already in NumberPanel
+				foreach (Number number in Controller.Instance.NumberPanel.Children)
+				{
+					number.Initialize();
+				}
+			}
+		}
 		public Action<int> OnLineNumberClick { get; set; }
 	}
 

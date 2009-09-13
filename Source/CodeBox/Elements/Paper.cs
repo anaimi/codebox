@@ -129,6 +129,7 @@ namespace CodeBox.Core.Elements
 			caretTimer.Start();
 			
 			// setup highlighting indicies
+			HighlightedBlocks = new List<Character>();
 			HighlightFromIndex = new Index(0, 0);
 			HighlightToIndex = new Index(0, 0);
 			
@@ -384,10 +385,7 @@ namespace CodeBox.Core.Elements
 
 			// the blocks that are already highlighted, but now need to be unhighlighted
 			var blocksToUnhighlight = HighlightedBlocks.Except(newBlocks).ToList();
-			foreach(var block in blocksToUnhighlight)
-			{
-				block.Unhighlight();
-			}
+			blocksToUnhighlight.ForEach(b => b.Unhighlight());
 			
 			// highlight the rest
 			HighlightedBlocks = newBlocks;
@@ -403,14 +401,8 @@ namespace CodeBox.Core.Elements
 
 		public void ClearHighlights()
 		{
-			if (HighlightedBlocks == null)
-				HighlightedBlocks = new List<Character>();
-
-			while(HighlightedBlocks.Count > 0)
-			{
-				HighlightedBlocks[0].Unhighlight();
-				HighlightedBlocks.RemoveAt(0);
-			}
+			HighlightedBlocks.ForEach(b => b.Unhighlight());
+			HighlightedBlocks.Clear();
 		}
 
 		public void RemoveHighlights()

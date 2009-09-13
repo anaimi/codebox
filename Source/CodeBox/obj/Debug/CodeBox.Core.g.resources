@@ -15,7 +15,7 @@
 		<Canvas x:Name="CanvasRoot" VerticalAlignment="Top" HorizontalAlignment="Left">
 			<Grid x:Name="GridRoot" MinWidth="940" MinHeight="480" SizeChanged="GridRoot_SizeChanged">
 				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="30" />
+					<ColumnDefinition Width="40" />
 					<ColumnDefinition />
 				</Grid.ColumnDefinitions>
 				

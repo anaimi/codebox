@@ -16,8 +16,10 @@ namespace CodeBox.Core.Elements
 	{
 		public static Number New(int number)
 		{
-			Number n = new Number();
+			var n = new Number();
+			n.Initialize();
 			n.SetNumber(number);
+			
 			return n;
 		}
 
@@ -26,16 +28,29 @@ namespace CodeBox.Core.Elements
 
 		private Rectangle rectBG;
 		private TextBlock tbNumber;
-
+		private PaperLine Line
+		{
+			get { return Controller.Instance.Paper.LineAt(LineIndex); }
+		}
+		private int LineIndex
+		{
+			get { return int.Parse(tbNumber.Text) - 1; }
+		}
+		
 		public Number()
 		{
 			Height = Character.CHAR_HEIGHT;
-			Width = 30;
+			Width = 40;
+		}
+		
+		public void Initialize()
+		{
+			Children.Clear();
 			
 			#region default children
 			rectBG = new Rectangle();
 			rectBG.Fill = new SolidColorBrush(Colors.Transparent);
-			rectBG.Width = 30;
+			rectBG.Width = Width;
 			rectBG.Height = 15;
 			Children.Add(rectBG);
 
@@ -46,7 +61,7 @@ namespace CodeBox.Core.Elements
 			EllipseLarge.Fill = new SolidColorBrush(Colors.Red);
 			EllipseLarge.Visibility = Visibility.Collapsed;
 			Children.Add(EllipseLarge);
-			
+
 			EllipseSmall = new Ellipse();
 			EllipseSmall.Width = 9;
 			EllipseSmall.Height = 9;
@@ -54,21 +69,53 @@ namespace CodeBox.Core.Elements
 			EllipseSmall.Fill = new SolidColorBrush(Colors.Yellow);
 			EllipseSmall.Visibility = Visibility.Collapsed;
 			Children.Add(EllipseSmall);
-			
+
 			tbNumber = new TextBlock();
 			tbNumber.Text = "1";
-			tbNumber.Margin = new Thickness(0, 0, 0, 0);
+			tbNumber.Margin = new Thickness(15, 0, 0, 0);
 			tbNumber.Foreground = new SolidColorBrush(Color.FromArgb(255, 124, 150, 93));
 			tbNumber.TextAlignment = TextAlignment.Right;
 			tbNumber.FontFamily = new FontFamily("Verdana");
-			tbNumber.Width = 28;
+			tbNumber.Width = 23;
 			Children.Add(tbNumber);
 			#endregion
-			
-			if (Configuration.Debugger.IsEnabled)
-				tbNumber.Cursor = Cursors.Hand;
 
-			MouseLeftButtonDown += (s, e) => { if (Configuration.Debugger.IsEnabled) Configuration.Debugger.OnLineNumberClick(int.Parse(tbNumber.Text)); };
+			if (Configuration.Debugger.IsEnabled)
+			{
+				rectBG.Cursor = Cursors.Hand;
+				EllipseLarge.Cursor = Cursors.Hand;
+				EllipseSmall.Cursor = Cursors.Hand;
+			}
+			
+			tbNumber.MouseLeftButtonDown += OnNumberDown;
+			tbNumber.MouseEnter += OnNumberMouseEnter;
+			
+			tbNumber.Cursor = Cursors.IBeam;
+
+			rectBG.MouseLeftButtonDown += MouseDown;
+			EllipseLarge.MouseLeftButtonDown += MouseDown;
+			EllipseSmall.MouseLeftButtonDown += MouseDown;
+		}
+
+		private void MouseDown(object sender, MouseButtonEventArgs e)
+		{
+			if (Configuration.Debugger.IsEnabled && Configuration.Debugger.OnLineNumberClick != null)
+				Configuration.Debugger.OnLineNumberClick(int.Parse(tbNumber.Text));
+		}
+
+		private void OnNumberDown(object sender, MouseButtonEventArgs e)
+		{
+			Controller.Instance.Paper.HighlightFrom(LineIndex, 0);
+			Controller.Instance.Paper.HighlightUpto(LineIndex, Line.LastIndex);
+		}
+
+		private void OnNumberMouseEnter(object sender, MouseEventArgs e)
+		{
+			if (!Controller.Instance.Paper.IsMouseDown)
+				return;
+
+			var pos = Controller.Instance.Paper.HighlightFromIndex.Line > LineIndex ? 0 : Line.LastIndex;
+			Controller.Instance.Paper.HighlightUpto(LineIndex, pos);
 		}
 
 		public void SetNumber(int number)

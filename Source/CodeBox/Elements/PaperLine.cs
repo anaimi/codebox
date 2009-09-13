@@ -60,7 +60,7 @@ namespace CodeBox.Core.Elements
 		{
 			if (selfIndex != -1)
 			{
-				if (Controller.Instance.Paper.IsMouseDown)
+				if (Controller.Instance.Paper.IsMouseDown && !(sender is Number))
 				{
 					Controller.Instance.Paper.HighlightUpto(selfIndex, 0);
 				}
