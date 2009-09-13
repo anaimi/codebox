@@ -335,9 +335,9 @@ namespace CodeBox.Core.Elements
 
 		public void HighlightUpto(int line, int pos)
 		{
-			ClearHighlights();
+			var newBlocks = new List<Character>();
 
-			// Get blocks
+			// get blocks
 			int fromLine = 0, fromPos = 0, toLine = 0, toPos = 0;
 			PaperLine pLine;
 			if (HighlightFromIndex.Line == line)
@@ -346,7 +346,7 @@ namespace CodeBox.Core.Elements
 				fromPos = Math.Min(HighlightFromIndex.Position, pos);
 				toPos = Math.Max(HighlightFromIndex.Position, pos);
 
-				HighlightedBlocks.AddRange(pLine.GetCharacters(fromPos, toPos));
+				newBlocks.AddRange(pLine.GetCharacters(fromPos, toPos));
 			}
 			else if (HighlightFromIndex.Line > line)
 			{
@@ -360,7 +360,7 @@ namespace CodeBox.Core.Elements
 					fromPos = (fromLine == line) ? pos : 0;
 					toPos = (fromLine == HighlightFromIndex.Line) ? HighlightFromIndex.Position - 1 : pLine.LastIndex;
 
-					HighlightedBlocks.AddRange(pLine.GetCharacters(fromPos, toPos));
+					newBlocks.AddRange(pLine.GetCharacters(fromPos, toPos));
 				}
 			}
 			else if (HighlightFromIndex.Line < line)
@@ -375,15 +375,27 @@ namespace CodeBox.Core.Elements
 					fromPos = (fromLine == HighlightFromIndex.Line) ? HighlightFromIndex.Position : 0;
 					toPos = (fromLine == line) ? pos : pLine.LastIndex;
 
-					HighlightedBlocks.AddRange(pLine.GetCharacters(fromPos, toPos));
+					newBlocks.AddRange(pLine.GetCharacters(fromPos, toPos));
 				}
 			}
 
-			// Set CaretPosition
+			// set CaretPosition
 			UpdateCaret(line, pos);
 
-			// HighlightBlue blocks
-			HighlightedBlocks.ForEach(b => b.HighlightBlue());
+			// the blocks that are already highlighted, but now need to be unhighlighted
+			var blocksToUnhighlight = HighlightedBlocks.Except(newBlocks).ToList();
+			foreach(var block in blocksToUnhighlight)
+			{
+				block.Unhighlight();
+			}
+			
+			// highlight the rest
+			HighlightedBlocks = newBlocks;
+			foreach (var block in HighlightedBlocks)
+			{
+				if (block.CurrentBackgroundState != Character.BackgroundState.Blue)
+					block.HighlightBlue();
+			}
 
 			// keep track to be used in RemoveHighlights
 			HighlightToIndex = new Index(line, pos);
@@ -394,10 +406,11 @@ namespace CodeBox.Core.Elements
 			if (HighlightedBlocks == null)
 				HighlightedBlocks = new List<Character>();
 
-			foreach (Character c in HighlightedBlocks)
-				c.Unhighlight();
-
-			HighlightedBlocks = new List<Character>();
+			while(HighlightedBlocks.Count > 0)
+			{
+				HighlightedBlocks[0].Unhighlight();
+				HighlightedBlocks.RemoveAt(0);
+			}
 		}
 
 		public void RemoveHighlights()

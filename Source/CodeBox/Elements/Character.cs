@@ -15,6 +15,7 @@ namespace CodeBox.Core.Elements
 {
 	public class Character : Grid
 	{
+		public enum BackgroundState { Transparent, Blue, Yellow }
 		public enum CharState { Normal, UnderlinedBlue, UnderlinedRed }
 
 		public const double CHAR_WIDTH = 8.0;
@@ -41,6 +42,7 @@ namespace CodeBox.Core.Elements
 				return text.Text == "\t";
 			}
 		}
+		public BackgroundState CurrentBackgroundState { get; set; }
 		public Token ParentToken { get; set; }
 
 		#region char type (keyword, symbol, etc)
@@ -111,6 +113,7 @@ namespace CodeBox.Core.Elements
 
 			Line = line;
 			Position = position;
+			CurrentBackgroundState = BackgroundState.Transparent;
 
 			DoubleClickHelper.Attach(this, OnDoubleClick);
 		}
@@ -183,17 +186,23 @@ namespace CodeBox.Core.Elements
 
 		public void HighlightBlue()
 		{
+			CurrentBackgroundState = BackgroundState.Blue;
+			
 			text.Foreground = new SolidColorBrush(Colors.White);
 			border.Background = new SolidColorBrush(Color.FromArgb(255, 55, 126, 232));
 		}
 
 		public void HighlightYellow()
 		{
+			CurrentBackgroundState = BackgroundState.Yellow;
+			
 			border.Background = new SolidColorBrush(Color.FromArgb(255, 255, 241, 50));
 		}
 
 		public void Unhighlight()
 		{
+			CurrentBackgroundState = BackgroundState.Transparent;
+			
 			UpdateState();
 			border.Background = new SolidColorBrush(Colors.Transparent);
 		}
