@@ -93,22 +93,22 @@ namespace CodeBox.Core.Services
      			{
      				Controller.Instance.Paper.RemoveCaret();
 
-     				var pos = Controller.Instance.Paper.PrevLine.LastIndex;
-					Controller.Instance.Paper.CurrentLine.MigrateCharacters(Controller.Instance.Paper.PrevLine, 0, pos);
+					var pos = Controller.Instance.Paper.PrevLine.LastIndex;
+					Controller.Instance.Paper.CurrentLine.MigrateCharacters(Controller.Instance.Paper.PrevLine, 0, Controller.Instance.Paper.CurrentLine.LastIndex);
 					
      				Controller.Instance.Paper.RemoveLine(Controller.Instance.Paper.Line);
      				Controller.Instance.Paper.UpdateCaret(Controller.Instance.Paper.Line - 1, pos + 1);
      			}
      			else
      			{
-     				if (!Controller.Instance.IsCtrlDown || Controller.Instance.Paper.CharachterBeforeCaret.ParentToken == null)
+     				if (!Controller.Instance.IsCtrlDown || Controller.Instance.Paper.CharacterBeforeCaret.ParentToken == null)
      				{
      					Controller.Instance.Paper.CurrentLine.Remove(Controller.Instance.Paper.Position - 1);
      					Controller.Instance.Paper.Position--;
      				}
      				else
      				{
-     					var charachter = Controller.Instance.Paper.CharachterBeforeCaret.ParentToken;
+     					var charachter = Controller.Instance.Paper.CharacterBeforeCaret.ParentToken;
 						Controller.Instance.Paper.CurrentLine.RemoveCharacters(Controller.Instance.TokenChars.GetTokenCharsByToken(charachter).Characters);
      					Controller.Instance.Paper.UpdateCaret(charachter.Line - 1, charachter.Position - 1);
      				}
@@ -138,26 +138,19 @@ namespace CodeBox.Core.Services
 
          		if (Controller.Instance.Paper.Position == Controller.Instance.Paper.CurrentLine.LastIndex)
          		{
-         			List<UIElement> chars = new List<UIElement>();
-         			foreach (UIElement c in Controller.Instance.Paper.NextLine.Children)
-         				chars.Add(c);
-         			foreach (UIElement c in chars)
-         			{
-         				Controller.Instance.Paper.NextLine.Children.Remove(c);
-         				Controller.Instance.Paper.CurrentLine.Children.Add(c);
-         			}
+					Controller.Instance.Paper.NextLine.MigrateCharacters(Controller.Instance.Paper.CurrentLine, 0, Controller.Instance.Paper.NextLine.LastIndex);
 
-         			Controller.Instance.Paper.RemoveLine(Controller.Instance.Paper.Children.IndexOf(Controller.Instance.Paper.NextLine));
+					Controller.Instance.Paper.RemoveLine(Controller.Instance.Paper.Line + 1);
          		}
          		else
          		{
-					if (!Controller.Instance.IsCtrlDown || Controller.Instance.Paper.CharachterAfterCaret.ParentToken == null)
+					if (!Controller.Instance.IsCtrlDown || Controller.Instance.Paper.CharacterAfterCaret.ParentToken == null)
 					{
 						Controller.Instance.Paper.CurrentLine.Remove(Controller.Instance.Paper.Position + 1);         				
          			}
          			else
 					{
-						var charachter = Controller.Instance.Paper.CharachterAfterCaret.ParentToken;
+						var charachter = Controller.Instance.Paper.CharacterAfterCaret.ParentToken;
 						Controller.Instance.Paper.CurrentLine.RemoveCharacters(Controller.Instance.TokenChars.GetTokenCharsByToken(charachter).Characters);
 						Controller.Instance.Paper.UpdateCaret(charachter.Line - 1, charachter.Position - 1);       				
          			}
@@ -298,9 +291,9 @@ namespace CodeBox.Core.Services
          			else
          			{
          				// with control
-         				var token = Controller.Instance.Paper.CharachterBeforeCaret.ParentToken;
+         				var token = Controller.Instance.Paper.CharacterBeforeCaret.ParentToken;
 
-         				if (token == null) // true when CharachterBeforeCaret is whitespace
+         				if (token == null) // true when CharacterBeforeCaret is whitespace
          				{
          					var tokens = Controller.Instance.TokenList.Tokens.OrderByDescending(t => t.Line).ThenByDescending(t => t.Position);
          					token = (from t in tokens
@@ -349,9 +342,9 @@ namespace CodeBox.Core.Services
          			else
          			{
          				// with control
-         				var token = Controller.Instance.Paper.CharachterAfterCaret.ParentToken;
+         				var token = Controller.Instance.Paper.CharacterAfterCaret.ParentToken;
 
-         				if (token == null) // true when CharachterBeforeCaret is whitespace
+         				if (token == null) // true when CharacterBeforeCaret is whitespace
          				{
          					token = (from t in Controller.Instance.TokenList.Tokens
          					         where t.Indices.Last().Line >= Controller.Instance.Paper.Line + 1 && t.Indices.Last().Position > Controller.Instance.Paper.Position

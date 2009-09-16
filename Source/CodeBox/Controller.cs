@@ -18,8 +18,6 @@ namespace CodeBox.Core
 	
 	public class Controller
 	{
-		private const double WAIT_BEFORE_PARSING = 0.5;
-		
 		public Canvas RootCanvas { get; private set; }
 		public Paper Paper { get; private set; }
 		public StackPanel NumberPanel { get; private set; }
@@ -78,9 +76,16 @@ namespace CodeBox.Core
 			paper.UpdateCaretPosition();
 
 			// set parsing timer
-			parsingTimer = new DispatcherTimer();
-			parsingTimer.Interval = TimeSpan.FromSeconds(WAIT_BEFORE_PARSING);
-			parsingTimer.Tick += (o, e) => ParseAndCallObservers();
+			if (Configuration.DurationBeforeTextChangedCallback > 0)
+			{
+				parsingTimer = new DispatcherTimer();
+				parsingTimer.Interval = TimeSpan.FromSeconds(Configuration.DurationBeforeTextChangedCallback);
+				parsingTimer.Tick += (o, e) => ParseAndCallObservers();
+			}
+			else
+			{
+				ParseAndCallObservers();
+			}
 			
 			// reset paper
 			paper.Children.Clear();
@@ -282,6 +287,7 @@ namespace CodeBox.Core
 			}
 		}
 		
+		#region TextChanged and parsing
 		public void TextChanged()
 		{
 			if (parsingTimer.IsEnabled)
@@ -295,8 +301,8 @@ namespace CodeBox.Core
 		
 		public void ParseAndCallObservers()
 		{
-			parsingTimer.Stop();
-			System.Diagnostics.Debug.WriteLine("Called");
+			if (parsingTimer != null)
+				parsingTimer.Stop();
 			
 			// generate new token list
 			TokenChars = new List<TokenChars>();
@@ -310,6 +316,12 @@ namespace CodeBox.Core
 			if (OnTextChanged != null)
 				OnTextChanged();
 		}
+		
+		internal void UpdateParsingSpeed()
+		{
+			parsingTimer.Interval = TimeSpan.FromSeconds(Configuration.DurationBeforeTextChangedCallback);
+		}
+		#endregion
 		
 		#region cut, copy, paste, select all, search
 		public void Cut(KeyEventArgs e)

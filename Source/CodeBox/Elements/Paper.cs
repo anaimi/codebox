@@ -220,7 +220,7 @@ namespace CodeBox.Core.Elements
 			}
 		}
 
-		public Character CharachterBeforeCaret
+		public Character CharacterBeforeCaret
 		{
 			get
 			{
@@ -231,7 +231,7 @@ namespace CodeBox.Core.Elements
 			}
 		}
 
-		public Character CharachterAfterCaret
+		public Character CharacterAfterCaret
 		{
 			get
 			{

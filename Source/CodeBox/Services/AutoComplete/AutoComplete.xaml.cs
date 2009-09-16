@@ -131,11 +131,11 @@ namespace CodeBox.Core.Services.AutoComplete
 			}
 
 			// get token & line
-			var token = Controller.Instance.Paper.CharachterBeforeCaret.ParentToken;
+			var token = Controller.Instance.Paper.CharacterBeforeCaret.ParentToken;
 			PaperLine pLine = Controller.Instance.Paper.LineAt(token.Line - 1);
 			
 			// remember current charachter (before removing it)
-			var currentChar = Controller.Instance.Paper.CharachterBeforeCaret;
+			var currentChar = Controller.Instance.Paper.CharacterBeforeCaret;
 			
 			// remove token chars
 			Controller.Instance.Paper.RemoveCaret();
@@ -186,7 +186,7 @@ namespace CodeBox.Core.Services.AutoComplete
 
 		public void SelectClosestItem()
 		{
-			var token = Controller.Instance.Paper.CharachterBeforeCaret.ParentToken;
+			var token = Controller.Instance.Paper.CharacterBeforeCaret.ParentToken;
 			
 			if (token == null)
 				return;
@@ -222,7 +222,7 @@ namespace CodeBox.Core.Services.AutoComplete
 			SelectClosestItem();
 			
 			// arrange
-			Character currentChar = Controller.Instance.Paper.CharachterBeforeCaret;
+			Character currentChar = Controller.Instance.Paper.CharacterBeforeCaret;
 			Token token = currentChar.ParentToken;
 			TokenChars tc = Controller.Instance.TokenChars.GetTokenCharsByToken(token);
 

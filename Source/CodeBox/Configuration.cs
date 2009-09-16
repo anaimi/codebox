@@ -13,7 +13,7 @@ namespace CodeBox.Core
 	public static class Configuration
 	{
 		public static List<string> Keywords = new List<string>();
-
+		
 		private static Debugger _debugger;
 		public static Debugger Debugger
 		{
@@ -79,6 +79,17 @@ namespace CodeBox.Core
 				}
 
 				return _autoCompleter;
+			}
+		}
+
+		private static double _durationBeforeTextChangeCallback = 0.2;
+		public static double DurationBeforeTextChangedCallback
+		{
+			get { return _durationBeforeTextChangeCallback; }
+			set
+			{
+				_durationBeforeTextChangeCallback = value;
+				Controller.Instance.UpdateParsingSpeed();
 			}
 		}
 		

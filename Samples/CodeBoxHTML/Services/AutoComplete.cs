@@ -182,11 +182,11 @@ namespace CodeBoxHTML.Services
 			var tokens = Controller.Instance.TokenList.Tokens;
 			
 			// back-spaced to line 0 position 0
-			if (Controller.Instance.Paper.CharachterBeforeCaret == null)
+			if (Controller.Instance.Paper.CharacterBeforeCaret == null)
 				return;
 			
 			// take the parent of the last charachter
-			var token = Controller.Instance.Paper.CharachterBeforeCaret.ParentToken;
+			var token = Controller.Instance.Paper.CharacterBeforeCaret.ParentToken;
 			
 			// re-sort elements on "<incomplete-tag-name"
 			if (IsInsideIncompleteTagName(token, tokens))
