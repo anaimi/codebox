@@ -59,6 +59,8 @@ namespace CodeBox.CodeLexer
 
 		public Token Next(int ahead)
 		{
+			var actualTokenIndex = currentTokenIndex;
+			
 			while (tokens.Count > currentTokenIndex + ahead && 0 <= currentTokenIndex + ahead)
 			{
 				if (tokens[currentTokenIndex + ahead].Type == TokenType.COMMENT)
@@ -67,9 +69,11 @@ namespace CodeBox.CodeLexer
 					continue;
 				}
 
+				currentTokenIndex = actualTokenIndex;
 				return tokens[currentTokenIndex + ahead];
 			}
 
+			currentTokenIndex = actualTokenIndex;
 			return new Token(TokenType.EOF, "EOF", null);
 		}
 		

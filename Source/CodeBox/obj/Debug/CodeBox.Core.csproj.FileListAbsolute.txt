@@ -42,12 +42,12 @@ C:\Users\Ahmad\Desktop\CodeBox\CodeBox\obj\Debug\CodeBox.Core.dll
 C:\Users\Ahmad\Desktop\CodeBox\CodeBox\obj\Debug\CodeBox.Core.pdb
 C:\Users\Ahmad\Desktop\CodeBox\Source\Binary\CodeBox.Core.dll
 C:\Users\Ahmad\Desktop\CodeBox\Source\Binary\CodeBox.Core.pdb
-C:\Users\Ahmad\Desktop\CodeBox\Binary\CodeBox.Core.dll
-C:\Users\Ahmad\Desktop\CodeBox\Binary\CodeBox.Core.pdb
+C:\Users\Ahmad\Desktop\CodeBox\Source\CodeBox\obj\Debug\CodeBox.Core.pdb
 C:\Users\Ahmad\Desktop\CodeBox\Source\CodeBox\obj\Debug\ResolveAssemblyReference.cache
 C:\Users\Ahmad\Desktop\CodeBox\Source\CodeBox\obj\Debug\Main.g.cs
 C:\Users\Ahmad\Desktop\CodeBox\Source\CodeBox\obj\Debug\Services\AutoComplete\AutoComplete.g.cs
 C:\Users\Ahmad\Desktop\CodeBox\Source\CodeBox\obj\Debug\Services\SyntaxValidator\ErrorTooltip.g.cs
 C:\Users\Ahmad\Desktop\CodeBox\Source\CodeBox\obj\Debug\CodeBox.Core.g.resources
+C:\Users\Ahmad\Desktop\CodeBox\Binary\CodeBox.Core.dll
+C:\Users\Ahmad\Desktop\CodeBox\Binary\CodeBox.Core.pdb
 C:\Users\Ahmad\Desktop\CodeBox\Source\CodeBox\obj\Debug\CodeBox.Core.dll
-C:\Users\Ahmad\Desktop\CodeBox\Source\CodeBox\obj\Debug\CodeBox.Core.pdb
