@@ -13,7 +13,7 @@
 	</UserControl.Resources>
 		<ScrollViewer x:Name="ScrollViewerRoot" Style="{StaticResource ScrollViewerStyle}" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" Padding="0">
 		<Canvas x:Name="CanvasRoot" VerticalAlignment="Top" HorizontalAlignment="Left">
-			<Grid x:Name="GridRoot" MinWidth="940" MinHeight="480" SizeChanged="GridRoot_SizeChanged">
+			<Grid x:Name="GridRoot" MinWidth="940" MinHeight="480" SizeChanged="GridRootSizeChanged">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="40" />
 					<ColumnDefinition />

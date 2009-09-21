@@ -79,6 +79,7 @@
     <Compile Include="Utilities\MouseWheelHelper.cs" />
     <Compile Include="Utilities\DoubleClickHelper.cs" />
     <Compile Include="Utilities\TokenChars.cs" />
+    <Compile Include="Utilities\VisualTreeExtension.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Main.xaml">

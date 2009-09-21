@@ -42,6 +42,7 @@ namespace CodeBox.Core
 		public event Action OnTextChanged;
 		public event Action OnMouseDown;
 		public event Action OnMouseUp;
+		public event Action<double> OnScroll;
 		public List<IService> Services;
 
 		private TextBox textBox;
@@ -293,7 +294,6 @@ namespace CodeBox.Core
 			if (parsingTimer.IsEnabled)
 			{
 				parsingTimer.Stop();
-				System.Diagnostics.Debug.WriteLine("Restarted");
 			}
 
 			parsingTimer.Start();
@@ -404,6 +404,12 @@ namespace CodeBox.Core
 							select token;
 
 			return lastToken.FirstOrDefault();
+		}
+		
+		internal void Scrolled(double newVal)
+		{
+			if (OnScroll != null)
+				OnScroll(newVal);
 		}
 	}
 }
