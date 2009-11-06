@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using System.Windows;
@@ -29,9 +31,9 @@ namespace CodeBox.Core
 			LayoutUpdated += WireScrollBarEvent;
 			
 			// set focus
-			paper.MouseLeftButtonDown += delegate { textBox.Focus(); };
+			paper.MouseLeftButtonDown += (s, ea) => textBox.Focus();
+			textBox.GotFocus += (s, ea) => { paper.ShowCaret = true; };			
 			textBox.LostFocus += TextBoxLostFocus;
-			textBox.GotFocus += delegate { paper.ShowCaret = true; };
 			textBox.Focus();
 			textBox.KeyDown += Controller.Instance.KeyDown;
 			textBox.KeyUp += Controller.Instance.KeyUp;
@@ -116,7 +118,7 @@ namespace CodeBox.Core
 			// A: Because the freaking thing is sealed!
 
 			// Q: The code below doesn't look like it will work. Are you sure this works? Can you guarantee this will be compatible with later version of SL?
-			// A: It works on my machine! (at least for now). I'll put it in a try clause just in case.
+			// A: It works on my machine! (at least for now). I'll put it in a try-catch clause just in case.
 
 			try
 			{

@@ -33,8 +33,6 @@ namespace CodeBox.Core.Services.SyntaxValidator
 		
 		private void Validate()
 		{
-			List<TokenChars> tokenChars = Controller.Instance.TokenChars;
-
 			if (underlinedTokenChars == null)
 				underlinedTokenChars = new List<TokenChars>();
 			
@@ -59,7 +57,7 @@ namespace CodeBox.Core.Services.SyntaxValidator
 			{
 				if (exception.Token != null)
 				{
-					var token = tokenChars.GetTokenCharsByToken(exception.Token);
+					var token = Controller.Instance.TokenChars[exception.Token];
 					
 					if (token == null)
 						continue;

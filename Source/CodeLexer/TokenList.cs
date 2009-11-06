@@ -14,7 +14,7 @@ namespace CodeBox.CodeLexer
 		}
 
 		private List<Token> tokens = new List<Token>();
-		private List<string> keywords;
+		private IEnumerable<string> keywords;
 		private int currentTokenIndex;
 		
 		public TokenList()
@@ -33,11 +33,14 @@ namespace CodeBox.CodeLexer
 				tokens.Add(outerTokens.tokens[fromToken]);
 			}
 		}
-
-		public TokenList(string code, List<string> keywords)
+		public TokenList(string code, IEnumerable<string> keywords) : this(code, keywords, 1, 1)
+		{
+			
+		}
+		public TokenList(string code, IEnumerable<string> keywords, int startLine, int startPosition)
 		{
 			this.keywords = keywords;
-			GenerateList(code);
+			GenerateList(code, startLine, startPosition);
 		}
 
 		public Token Next()
@@ -191,9 +194,9 @@ namespace CodeBox.CodeLexer
 			return (currentTokenIndex > 0);
 		}
 
-		private void GenerateList(string code)
+		private void GenerateList(string code, int startLine, int startPosition)
 		{
-			Position position = new Position(code);
+			var position = new Position(code, startLine, startPosition);
 
 			while (true)
 			{
@@ -428,12 +431,15 @@ namespace CodeBox.CodeLexer
 
 		private class Position
 		{
-			public Position(string code)
+			public Position(string code, int startLine, int startPosition)
 			{
 				this.code = code;
+				_startLine = startLine;
+				_startPosition = startPosition;
 			}
-
+			
 			private string code;
+			private int _startLine, _startPosition;
 			private int _line, _pos;
 
 			public int CurrentIndex;
@@ -456,15 +462,15 @@ namespace CodeBox.CodeLexer
 
 			private void CalculatePosition()
 			{
-				_line = 1;
-				_pos = 1;
+				_line = _startLine;
+				_pos = _startPosition;
 
 				for (int i = 0; i < CurrentIndex; i++)
 				{
 					if (code[i] == '\n')
 					{
 						_line++;
-						_pos = 1;
+						_pos = _startPosition;
 					}
 					else
 					{

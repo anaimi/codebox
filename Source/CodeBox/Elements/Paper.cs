@@ -124,7 +124,7 @@ namespace CodeBox.Core.Elements
 
 			// setup caret timer
 			caretTimer = new DispatcherTimer();
-			caretTimer.Interval = TimeSpan.FromSeconds(0.8);
+			caretTimer.Interval = TimeSpan.FromSeconds(0.5);
 			caretTimer.Tick += delegate { caret.Visibility = (caret.Visibility == Visibility.Visible || !ShowCaret) ? Visibility.Collapsed : Visibility.Visible; };
 			caretTimer.Start();
 			

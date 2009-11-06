@@ -224,7 +224,7 @@ namespace CodeBox.Core.Services.AutoComplete
 			// arrange
 			Character currentChar = Controller.Instance.Paper.CharacterBeforeCaret;
 			Token token = currentChar.ParentToken;
-			TokenChars tc = Controller.Instance.TokenChars.GetTokenCharsByToken(token);
+			TokenChars tc = Controller.Instance.TokenChars[token];
 
 			// position
 			PaperLine line = (PaperLine)tc.FirstCharacter.Parent;

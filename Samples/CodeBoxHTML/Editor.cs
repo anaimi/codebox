@@ -52,7 +52,7 @@ namespace CodeBoxHTML
 			
 			// keywords
 			Configuration.Keywords = (from element in html5.Root.Element("elements").Descendants()
-			                          select element.Attribute("name").Value).ToList();
+			                          select element.Attribute("name").Value).ToArray();
 
 			// validation
 			Configuration.Validator.IsEnabled = true;
@@ -78,7 +78,7 @@ namespace CodeBoxHTML
 			Controller.Instance.InitializeServices();
 
 			// do we have a backup? if yes, load it
-			Recovery.Instance.LoadBackupIfAvailable();
+			Recovery.Instance.LoadBackup();
 		}
 		
 		public string GetText()

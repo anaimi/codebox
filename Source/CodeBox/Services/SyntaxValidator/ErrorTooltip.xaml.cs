@@ -57,7 +57,7 @@ namespace CodeBox.Core.Services.SyntaxValidator
 			// arrange
 			Character currentChar = ((Character)sender);
 			Token token = currentChar.ParentToken;
-			TokenChars tc = Controller.Instance.TokenChars.GetTokenCharsByToken(token);
+			TokenChars tc = Controller.Instance.TokenChars[token];
 			
 			// position
 			PaperLine line = (PaperLine)tc.FirstCharacter.Parent;

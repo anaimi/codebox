@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
@@ -69,7 +69,7 @@ namespace CodeBox.Core.Services
      				numberOfTabs--;
      			}
      			#endregion
-     			Controller.Instance.TextChanged();
+				Controller.Instance.TextCompletelyChanged();
      			return KeyboardBubbling.Stop;
      		});
 			#endregion
@@ -82,7 +82,7 @@ namespace CodeBox.Core.Services
      			if (Controller.Instance.Paper.HaveHighlightedText)
      			{
      				Controller.Instance.Paper.RemoveHighlights();
-     				Controller.Instance.TextChanged();
+					Controller.Instance.TextCompletelyChanged();
      				return KeyboardBubbling.Stop;
      			}
 
@@ -109,14 +109,14 @@ namespace CodeBox.Core.Services
      				else
      				{
      					var charachter = Controller.Instance.Paper.CharacterBeforeCaret.ParentToken;
-						Controller.Instance.Paper.CurrentLine.RemoveCharacters(Controller.Instance.TokenChars.GetTokenCharsByToken(charachter).Characters);
+						Controller.Instance.Paper.CurrentLine.RemoveCharacters(Controller.Instance.TokenChars[charachter].Characters);
      					Controller.Instance.Paper.UpdateCaret(charachter.Line - 1, charachter.Position - 1);
      				}
      			}
 
      			Controller.Instance.UpdatePositions();
      			Controller.Instance.Paper.UpdateCaretPosition();
-     			Controller.Instance.TextChanged();
+     			Controller.Instance.CurrentLineTextUpdated();
      			return KeyboardBubbling.Continue;
      		});
 			#endregion
@@ -129,7 +129,7 @@ namespace CodeBox.Core.Services
          		if (Controller.Instance.Paper.HaveHighlightedText)
          		{
          			Controller.Instance.Paper.RemoveHighlights();
-         			Controller.Instance.TextChanged();
+					Controller.Instance.TextCompletelyChanged();
          			return KeyboardBubbling.Continue;
          		}
 
@@ -151,14 +151,14 @@ namespace CodeBox.Core.Services
          			else
 					{
 						var charachter = Controller.Instance.Paper.CharacterAfterCaret.ParentToken;
-						Controller.Instance.Paper.CurrentLine.RemoveCharacters(Controller.Instance.TokenChars.GetTokenCharsByToken(charachter).Characters);
+						Controller.Instance.Paper.CurrentLine.RemoveCharacters(Controller.Instance.TokenChars[charachter].Characters);
 						Controller.Instance.Paper.UpdateCaret(charachter.Line - 1, charachter.Position - 1);       				
          			}
          		}
 
          		Controller.Instance.UpdatePositions();
          		Controller.Instance.Paper.UpdateCaretPosition();
-         		Controller.Instance.TextChanged();
+         		Controller.Instance.CurrentLineTextUpdated();
          		return KeyboardBubbling.Continue;
          	});
 			#endregion
@@ -201,7 +201,7 @@ namespace CodeBox.Core.Services
 
          				Controller.Instance.Paper.HighlightedBlocks.AddRange(newBlocks);
          				Controller.Instance.UpdatePositions();
-         				Controller.Instance.TextChanged();
+						Controller.Instance.TextCompletelyChanged();
          			}
          			else
          			{

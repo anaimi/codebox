@@ -35,12 +35,12 @@ namespace CodeBox.Core.Services
 		
 		public void Highlight()
 		{
-			List<TokenChars> tokens = Controller.Instance.TokenChars;
+			var tokens = Controller.Instance.TokenChars;
 
 			if (tokens == null)
 				return;
 
-			foreach(var t in tokens)
+			foreach(var t in tokens.Values)
 			{
 				// apply type to all chars
 				foreach (var c in t.Characters)

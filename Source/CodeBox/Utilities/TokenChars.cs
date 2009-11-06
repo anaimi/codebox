@@ -78,32 +78,4 @@ namespace CodeBox.Core.Utilities
 			return chars;
 		}
 	}
-	
-	public static class TokenCharsListExtension
-	{
-		public static TokenChars GetTokenCharsByToken(this List<TokenChars> tcList, Token t)
-		{
-			foreach (var tc in tcList)
-			{
-				if (tc.Token == t)
-					return tc;
-			}
-
-			return null;
-		}
-
-		public static List<Token> GetOnlyTokens(this List<TokenChars> tc)
-		{
-			List<Token> tokens = new List<Token>();
-
-			foreach (var tokenChars in tc)
-			{
-				tokens.Add(tokenChars.Token);
-			}
-
-			return tokens;
-		}
-
-
-	}
 }

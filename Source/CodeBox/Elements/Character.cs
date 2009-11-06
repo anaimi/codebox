@@ -123,7 +123,7 @@ namespace CodeBox.Core.Elements
 			if (ParentToken == null)
 				return;
 			
-			var chars = Controller.Instance.TokenChars.GetTokenCharsByToken(ParentToken);
+			var chars = Controller.Instance.TokenChars[ParentToken];
 
 			Controller.Instance.Paper.HighlightFrom(chars.FirstCharacter.Line, chars.FirstCharacter.Position);
 			Controller.Instance.Paper.HighlightUpto(chars.FirstCharacter.Line, chars.FirstCharacter.Position + chars.Characters.Count);

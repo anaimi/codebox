@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Windows.Media;
 using CodeBox.CodeLexer;
-using System.Windows.Browser;
-using System.Windows;
-using CodeBox.Core.Services.AutoComplete;
 using System.IO;
 using CodeBox.Core.Elements;
 
@@ -12,7 +9,7 @@ namespace CodeBox.Core
 {
 	public static class Configuration
 	{
-		public static List<string> Keywords = new List<string>();
+		public static IEnumerable<string> Keywords = new string[] {};
 		
 		private static Debugger _debugger;
 		public static Debugger Debugger
@@ -89,7 +86,7 @@ namespace CodeBox.Core
 			set
 			{
 				_durationBeforeTextChangeCallback = value;
-				Controller.Instance.UpdateParsingSpeed();
+				Controller.Instance.UpdateTextChangeNotificationSpeed();
 			}
 		}
 		

@@ -89,8 +89,8 @@ namespace CodeBox.Core.Elements
 			
 			tbNumber.MouseLeftButtonDown += OnNumberDown;
 			tbNumber.MouseEnter += OnNumberMouseEnter;
-			
-			tbNumber.Cursor = Cursors.IBeam;
+
+			Cursor = Cursors.IBeam;
 
 			rectBG.MouseLeftButtonDown += MouseDown;
 			EllipseLarge.MouseLeftButtonDown += MouseDown;

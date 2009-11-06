@@ -26,7 +26,7 @@
 				
 				<TextBox x:Name="textBox" Grid.Column="1" Grid.Row="0" Height="0" Width="0" AcceptsReturn="True"></TextBox>
 				
-				<Border Grid.Column="0" Grid.Row="1" Background="#FFEEEEEE">
+				<Border x:Name="numberPanelBorder" Grid.Column="0" Grid.Row="1" Background="#FFEEEEEE">
 					<StackPanel x:Name="numberPanel">
 						<Elements:Number />
 					</StackPanel>

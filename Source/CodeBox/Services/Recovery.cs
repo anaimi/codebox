@@ -3,7 +3,6 @@ using System.Windows.Threading;
 using System.Threading;
 using System.IO.IsolatedStorage;
 using System.IO;
-using CodeBox.Core.Services;
 
 namespace CodeBox.Core.Services
 {
@@ -74,13 +73,13 @@ namespace CodeBox.Core.Services
 			           	}).Start();
 		}
 
-		public void LoadBackupIfAvailable()
+		public void LoadBackup()
 		{
 			try
 			{
 				string text;
-				IsolatedStorageFile file = IsolatedStorageFile.GetUserStoreForSite();
-				IsolatedStorageFileStream stream = file.OpenFile(FILE_NAME, FileMode.Open);
+				var file = IsolatedStorageFile.GetUserStoreForSite();
+				var stream = file.OpenFile(FILE_NAME, FileMode.Open);
 				StreamReader sr = new StreamReader(stream);
 
 				text = sr.ReadToEnd().Trim();
@@ -93,6 +92,12 @@ namespace CodeBox.Core.Services
 			{
 				
 			}
+		}
+		
+		public bool HaveCopy()
+		{
+			var file = IsolatedStorageFile.GetUserStoreForSite();
+			return file.FileExists(FILE_NAME);
 		}
 
 		public void Initialize()

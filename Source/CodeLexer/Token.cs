@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+using System;
 
 namespace CodeBox.CodeLexer
 {
-	public class Token
+	public class Token : IComparable
 	{
 		public TokenType Type { get; set; }
 		public string Value { get; set; }
@@ -86,9 +87,7 @@ namespace CodeBox.CodeLexer
 		public override bool Equals(object obj)
 		{
 			if (obj == null || GetType() != obj.GetType())
-			{
 				return false;
-			}
 
 			Token other = obj as Token;
 
@@ -100,7 +99,22 @@ namespace CodeBox.CodeLexer
 
 		public override int GetHashCode()
 		{
-			return Line;
+			return Line * 1000 + Position;
+		}
+
+		public int CompareTo(object obj)
+		{
+			// mainly used in sorting TokenList.Tokens (see Controller.TextChanged())
+			// will assume obj is always of type Token (as it should be)
+			var other = obj as Token;
+			
+			if (Line > other.Line) return 1;
+			if (Line < other.Line) return -1;
+			
+			if (Position > other.Position) return 1;
+			if (Position < other.Position) return -1;
+
+			return 0;
 		}
 
 		public override string ToString()

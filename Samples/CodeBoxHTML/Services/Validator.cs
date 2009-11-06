@@ -78,7 +78,7 @@ namespace CodeBoxHTML.Services
 
 					#endregion
 				}
-				else
+				else if (stack.Count > 0)
 				{
 					if (stack.Peek().Value != token.Value)
 					{
