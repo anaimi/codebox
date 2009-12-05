@@ -76,8 +76,10 @@
     <Compile Include="Services\SyntaxHighlighter.cs" />
     <Compile Include="Services\SyntaxValidator\SyntaxValidator.cs" />
     <Compile Include="Services\UndoRedo.cs" />
+    <Compile Include="Utilities\EventObserver.cs" />
     <Compile Include="Utilities\MouseWheelHelper.cs" />
     <Compile Include="Utilities\DoubleClickHelper.cs" />
+    <Compile Include="Utilities\StringExtension.cs" />
     <Compile Include="Utilities\TokenChars.cs" />
     <Compile Include="Utilities\VisualTreeExtension.cs" />
   </ItemGroup>

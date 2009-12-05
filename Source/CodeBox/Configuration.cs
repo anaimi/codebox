@@ -79,17 +79,6 @@ namespace CodeBox.Core
 			}
 		}
 
-		private static double _durationBeforeTextChangeCallback = 0.2;
-		public static double DurationBeforeTextChangedCallback
-		{
-			get { return _durationBeforeTextChangeCallback; }
-			set
-			{
-				_durationBeforeTextChangeCallback = value;
-				Controller.Instance.UpdateTextChangeNotificationSpeed();
-			}
-		}
-		
 		public static Color HoverColor = Color.FromArgb(255, 230, 230, 230);
 	}
 	
@@ -110,6 +99,7 @@ namespace CodeBox.Core
 				}
 			}
 		}
+		public Action OnLinesIndicesChanged { get; set; }
 		public Action<int> OnLineNumberClick { get; set; }
 	}
 

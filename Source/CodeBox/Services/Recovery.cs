@@ -27,50 +27,37 @@ namespace CodeBox.Core.Services
 		}
 		#endregion
 		
-		private const int SAVE_EVERY = 5;
 		private const string FILE_NAME = "algorithmatic.txt";
-
-		private DispatcherTimer timer;
-		private string lastCopy = "";
 		private bool isBusy;
 
-		private void SaveCopy(object sender, EventArgs e)
+		private void SaveCopy()
 		{
 			if (isBusy)
 				return;
 
 			isBusy = true;
 
-			string text = Controller.Instance.Text;
+			var text = Controller.Instance.Text;
 
-			new Thread(() =>
-			           	{
-			           		if (text == lastCopy)
-			           		{
-			           			isBusy = false;
-			           			return;
-			           		}
+			new Thread(() => {
+           		try
+           		{
+           			// InitializeServices
+           			var file = IsolatedStorageFile.GetUserStoreForSite();
+           			var stream = file.CreateFile(FILE_NAME);
+           			var writer = new StreamWriter(stream);
 
-			           		lastCopy = text;
+           			// Save
+           			writer.WriteLine(text);
+           			writer.Close();
+           		}
+           		catch
+           		{
+           			System.Diagnostics.Debug.WriteLine("Error saving backup.");
+           		}
 
-			           		try
-			           		{
-			           			// InitializeServices
-			           			IsolatedStorageFile file = IsolatedStorageFile.GetUserStoreForSite();
-			           			IsolatedStorageFileStream stream = file.CreateFile(FILE_NAME);
-			           			StreamWriter writer = new StreamWriter(stream);
-
-			           			// Save
-			           			writer.WriteLine(text);
-			           			writer.Close();
-			           		}
-			           		catch
-			           		{
-			           			System.Diagnostics.Debug.WriteLine("Error saving backup.");
-			           		}
-
-			           		isBusy = false;
-			           	}).Start();
+           		isBusy = false;
+           	}).Start();
 		}
 
 		public void LoadBackup()
@@ -80,13 +67,12 @@ namespace CodeBox.Core.Services
 				string text;
 				var file = IsolatedStorageFile.GetUserStoreForSite();
 				var stream = file.OpenFile(FILE_NAME, FileMode.Open);
-				StreamReader sr = new StreamReader(stream);
+				var sr = new StreamReader(stream);
 
 				text = sr.ReadToEnd().Trim();
 				stream.Close();
 
 				Controller.Instance.Text = text;
-				lastCopy = text;
 			}
 			catch
 			{
@@ -102,10 +88,7 @@ namespace CodeBox.Core.Services
 
 		public void Initialize()
 		{
-			timer = new DispatcherTimer();
-			timer.Interval = TimeSpan.FromSeconds(SAVE_EVERY);
-			timer.Tick += SaveCopy;
-			timer.Start();
+			Controller.Instance.AddTextChangeObserver(7, SaveCopy);
 		}
 	}
 }

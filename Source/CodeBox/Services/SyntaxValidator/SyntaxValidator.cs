@@ -27,8 +27,8 @@ namespace CodeBox.Core.Services.SyntaxValidator
 		public void Initialize()
 		{
 			ErrorTooltip.SetMousePositionParent(Controller.Instance.RootCanvas);
-			
-			Controller.Instance.OnTextChanged += Validate;
+
+			Controller.Instance.AddTextChangeObserver(0, Validate);
 		}
 		
 		private void Validate()
@@ -57,10 +57,10 @@ namespace CodeBox.Core.Services.SyntaxValidator
 			{
 				if (exception.Token != null)
 				{
-					var token = Controller.Instance.TokenChars[exception.Token];
-					
-					if (token == null)
+					if (!Controller.Instance.TokenChars.ContainsKey(exception.Token))
 						continue;
+					
+					var token = Controller.Instance.TokenChars[exception.Token];
 					
 					token.SetCharacterState(Character.CharState.UnderlinedRed);
 					underlinedTokenChars.Add(token);

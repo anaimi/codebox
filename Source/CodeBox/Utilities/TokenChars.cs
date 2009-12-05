@@ -57,23 +57,21 @@ namespace CodeBox.Core.Utilities
 			}
 		}
 
-		private List<Character> GetCharsByIndices(List<Index> indices)
+		private List<Character> GetCharsByIndices(IEnumerable<Index> indices)
 		{
-			Paper paper = Controller.Instance.Paper;
+			// index line and position are off by one...
+			var chars = new List<Character>();
+			Controller.Instance.Paper.RemoveCaret();
 
-			// Index line and position are off by one...
-			List<Character> chars = new List<Character>();
-			paper.RemoveCaret();
-
-			foreach (Index index in indices)
+			foreach (var index in indices)
 			{
-				PaperLine pLine = paper.LineAt(index.Line - 1);
+				var pLine = Controller.Instance.Paper.LineAt(index.Line - 1);
 
 				if (pLine.Children.Count > 0)
 					chars.Add((Character)pLine.At(index.Position - 1));
 			}
 
-			paper.RestoreCaret();
+			Controller.Instance.Paper.RestoreCaret();
 
 			return chars;
 		}

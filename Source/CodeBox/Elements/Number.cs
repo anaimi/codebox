@@ -1,14 +1,8 @@
-﻿using System;
-using System.Net;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Shapes;
-using CodeBox.Core;
 
 namespace CodeBox.Core.Elements
 {
@@ -45,6 +39,7 @@ namespace CodeBox.Core.Elements
 		
 		public void Initialize()
 		{
+			Cursor = Cursors.IBeam;
 			Children.Clear();
 			
 			#region default children
@@ -79,7 +74,12 @@ namespace CodeBox.Core.Elements
 			tbNumber.Width = 23;
 			Children.Add(tbNumber);
 			#endregion
-
+			
+			rectBG.MouseLeftButtonDown += MouseDown;
+			EllipseLarge.MouseLeftButtonDown += MouseDown;
+			EllipseSmall.MouseLeftButtonDown += MouseDown;
+			
+			// enable debugging?
 			if (Configuration.Debugger.IsEnabled)
 			{
 				rectBG.Cursor = Cursors.Hand;
@@ -87,14 +87,13 @@ namespace CodeBox.Core.Elements
 				EllipseSmall.Cursor = Cursors.Hand;
 			}
 			
+			// enable highlighting when mouse is over Number
 			tbNumber.MouseLeftButtonDown += OnNumberDown;
 			tbNumber.MouseEnter += OnNumberMouseEnter;
-
-			Cursor = Cursors.IBeam;
-
-			rectBG.MouseLeftButtonDown += MouseDown;
-			EllipseLarge.MouseLeftButtonDown += MouseDown;
-			EllipseSmall.MouseLeftButtonDown += MouseDown;
+			
+			// hover effect
+			MouseEnter += (s, e) => Line.PaperLineMouseEnter(s, e);
+			MouseLeave += (s, e) => Line.PaperLineMouseLeave(s, e);
 		}
 
 		private void MouseDown(object sender, MouseButtonEventArgs e)

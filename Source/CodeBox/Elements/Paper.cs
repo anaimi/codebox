@@ -21,15 +21,16 @@ namespace CodeBox.Core.Elements
 		{
 			get { return Controller.Instance.NumberPanel; }
 		}
+		
 		public string Text
 		{
 			get
 			{
-				StringBuilder text = new StringBuilder();
+				var text = new StringBuilder();
 
 				foreach (PaperLine line in Lines)
 				{
-					foreach (Character charachter in line.Characters)
+					foreach (var charachter in line.Characters)
 						text.Append(charachter.Char);
 
 					text.Append('\n');
@@ -58,7 +59,7 @@ namespace CodeBox.Core.Elements
 					}
 
 					// add it
-					CurrentLine.Add(new Character(c, Line, Position), Position);
+					CurrentLine.Add(new Character(c), Position);
 					Position++;
 				}
 			}
@@ -78,9 +79,12 @@ namespace CodeBox.Core.Elements
 			set
 			{
 				_line = value;
-				PaperLine line = LineAt(_line);
+				
+				var line = LineAt(_line);
+				
 				if (_position > line.LastIndex)
 					_position = (line.Children.Count == 0) ? 0 : line.LastIndex + 1;
+				
 				UpdateCaretPosition();
 			}
 		}
@@ -146,19 +150,15 @@ namespace CodeBox.Core.Elements
 			return (PaperLine)Children[index];
 		}
 
-		public List<PaperLine> Lines
+		public IEnumerable<PaperLine> Lines
 		{
 			get
 			{
-				List<PaperLine> lines = new List<PaperLine>();
-
-				foreach (UIElement child in Children)
+				foreach (var child in Children)
 				{
-					if (child.GetType() == typeof(PaperLine))
-						lines.Add((PaperLine)child);
+					if (child is PaperLine)
+						yield return child as PaperLine;
 				}
-
-				return lines;
 			}
 		}
 
@@ -171,7 +171,7 @@ namespace CodeBox.Core.Elements
 				if (Children.Count == 0)
 				{
 					line = new PaperLine();
-					Children.Add(line);
+					InsertLine(0, line);
 				}
 				else
 				{
@@ -241,22 +241,37 @@ namespace CodeBox.Core.Elements
 				return CurrentLine.Children[_position + 1] as Character;
 			}
 		}
-
-		public void RemoveLine(int line)
+		
+		public void UpdateLinesIndices(int index)
 		{
-			var pLine = LineAt(line);
-			RemoveLine(pLine);
+			for (; index < Children.Count; index++)
+			{
+				LineAt(index).SelfIndex = index;
+			}
+
+			if (Configuration.Debugger.OnLinesIndicesChanged != null)
+				Configuration.Debugger.OnLinesIndicesChanged();
+		}
+		
+		#region insert/remove line
+		public void InsertLine(int index, PaperLine line)
+		{
+			Children.Insert(index, line);
+			UpdateNumberPanel();
+			UpdateLinesIndices(index);			
 		}
 
-		public void RemoveLine(PaperLine line)
+		public void RemoveLine(int index)
 		{
-			Children.Remove(line);
+			Children.RemoveAt(index);
+			UpdateLinesIndices(index);
 		}
-
+		#endregion
+		
 		#region mouse handling
 		private void Paper_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
-			if (CurrentLine.Characters.Count == 0)
+			if (CurrentLine.Characters.Count() == 0)
 			{
 				Controller.Instance.GetFocus();
 				UpdateCaret(Line, 1);
@@ -432,31 +447,33 @@ namespace CodeBox.Core.Elements
 			// remove the blocks
 			foreach (var c in HighlightedBlocks)
 			{
-				PaperLine l = (PaperLine)c.Parent;
+				var l = (PaperLine)c.Parent;
 				l.Remove(c);
 			}
 
 			// remove the lines (between the first and last)
-			List<PaperLine> linesToRemove = new List<PaperLine>();
-			for (int i = Children.IndexOf(firstLine) + 1; i < Children.IndexOf(lastLine); i++)
+			var linesToRemove = new List<PaperLine>();
+			for (int i = firstLine.SelfIndex + 1; i < lastLine.SelfIndex; i++)
 				linesToRemove.Add(LineAt(i));
 			for (int i = 0; i < linesToRemove.Count; i++)
-				RemoveLine(linesToRemove[i]);
+				Children.Remove(linesToRemove[i]); // do not use RemoveLine since indices will be updated on every iteration - instead update at the end of this method
 
 			// glue the remaining of the last line with the remaining of the first line
 			if (firstLine != lastLine)
 			{
-				int index = (firstLine.LastIndex == 0) ? 0 : firstLine.LastIndex + 1;
-				List<Character> chars = lastLine.GetCharacters(0, lastLine.LastIndex);
+				var index = (firstLine.LastIndex == 0) ? 0 : firstLine.LastIndex + 1;
+				var chars = lastLine.GetCharacters(0, lastLine.LastIndex);
 				lastLine.RemoveCharacters(chars);
 				firstLine.AddCharacters(chars, index);
 
-				RemoveLine(lastLine);
+				Children.Remove(lastLine);
 			}
 
 			// reset and set
 			HighlightedBlocks = new List<Character>();
+			UpdateLinesIndices(firstLine.SelfIndex);
 			UpdateCaret(Children.IndexOf(firstLine), endCharIndex);
+			Controller.Instance.TextCompletelyChanged();
 		}
 		#endregion
 
@@ -509,24 +526,24 @@ namespace CodeBox.Core.Elements
 			return chars;
 		}
 
-		private void UpdateNumberPanel()
+		public void UpdateNumberPanel()
 		{
-			int currentNumber = numbers.Children.Count;
-			int currentLine = Children.Count;
+			int countOfNumbers = numbers.Children.Count;
+			int countOfLines = Children.Count;
 
-			if (currentNumber == currentLine)
+			if (countOfNumbers == countOfLines)
 			{
 				return;
 			}
-			else if (currentNumber > currentLine)
+			else if (countOfNumbers > countOfLines)
 			{
-				for (; currentNumber > currentLine; currentNumber--)
-					numbers.Children.RemoveAt(currentNumber - 1);
+				for (; countOfNumbers > countOfLines; countOfNumbers--)
+					numbers.Children.RemoveAt(countOfNumbers - 1);
 			}
-			else if (currentNumber < currentLine)
+			else if (countOfNumbers < countOfLines)
 			{
-				for (; currentNumber < currentLine; currentNumber++)
-					numbers.Children.Add(Number.New(currentNumber));
+				for (; countOfNumbers < countOfLines; countOfNumbers++)
+					numbers.Children.Add(Number.New(countOfNumbers));
 			}
 		}
 	}

@@ -78,6 +78,7 @@ namespace CodeBox.Core.Services
 		{
 			Controller.Instance.Paper.Dispatcher.BeginInvoke(() => Controller.Instance.Text = states[index].Text);
 			Controller.Instance.Paper.Dispatcher.BeginInvoke(() => Controller.Instance.Paper.UpdateCaret(states[index].Line, states[index].Position));
+			
 		}
 
 		public void Initialize()
@@ -88,7 +89,7 @@ namespace CodeBox.Core.Services
 			timer.Interval = TimeSpan.FromSeconds(PAUSE_TO_STORE);
 			timer.Tick += AddState;
 
-			Controller.Instance.OnTextChanged += SaveWhenReady;
+			Controller.Instance.AddTextChangeObserver(2, SaveWhenReady);
 			
 			SaveWhenReady();
 		}

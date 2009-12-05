@@ -11,117 +11,15 @@ namespace CodeBox.Core.Elements
 {
 	public class PaperLine : StackPanel
 	{
-		public Brush CurrentBrush;
+		public Brush CurrentBrush { get; set; }
 		
-		private Paper paper
-		{
-			get { return Controller.Instance.Paper; }
-		}
-		private int selfIndex
-		{
-			get { return paper.Children.IndexOf(this); }
-		}
-
-		public PaperLine()
-		{
-			// settings
-			Orientation = Orientation.Horizontal;
-			HorizontalAlignment = HorizontalAlignment.Stretch;
-			Margin = new Thickness(0, 0, 0, 0);
-			Height = 15;
-			CurrentBrush = Background = new SolidColorBrush(Colors.White);
-			
-			// events
-			Loaded += PaperLine_Loaded;
-			MouseLeftButtonDown += PaperLineMouseDown;
-			MouseMove += PaperLineMouseMove;
-			MouseLeftButtonUp += PaperLineMouseUp;
-			MouseEnter += PaperLineMouseEnter;
-			MouseLeave += PaperLineMouseLeave;
-		}
-
-		private void PaperLine_Loaded(object sender, RoutedEventArgs e)
-		{
-			// handling number
-			Number.MouseEnter += PaperLineMouseEnter;
-			Number.MouseLeave += PaperLineMouseLeave;
-		}
-
-		public void PaperLineMouseLeave(object sender, MouseEventArgs e)
-		{
-			if (selfIndex != -1)
-			{
-				Background = CurrentBrush;
-				Number.UnHover();
-			}
-		}
-
-		private void PaperLineMouseEnter(object sender, MouseEventArgs e)
-		{
-			if (selfIndex != -1)
-			{
-				if (Controller.Instance.Paper.IsMouseDown && !(sender is Number))
-				{
-					Controller.Instance.Paper.HighlightUpto(selfIndex, 0);
-				}
-
-				Background = new SolidColorBrush(Configuration.HoverColor);
-				Number.Hover();
-			}
-		}
-
-		private void PaperLineMouseDown(object sender, MouseButtonEventArgs e)
-		{
-			int charIndex = GetCharIndexFromWidth(e.GetPosition(this).X);
-
-			if ((charIndex == LastIndex) && (paper.Line != selfIndex)) /* HAAACK, and works! (if you click on an unfocused line in an area with no charachters, it sets the cursor before the last char, not after) */
-				charIndex++;
-
-			paper.HighlightFrom(selfIndex, charIndex);
-			paper.ClickHandledByLine = true;
-		}
-
-		private void PaperLineMouseMove(object sender, MouseEventArgs e)
-		{
-			if (!paper.IsMouseDown)
-				return;
-
-			int charIndex = GetCharIndexFromWidth(e.GetPosition(this).X);
-			paper.HighlightUpto(selfIndex, charIndex);
-		}
-
-		private void PaperLineMouseUp(object sender, MouseButtonEventArgs e)
-		{
-			
-		}
-
-		private int GetCharIndexFromWidth(double widthInPixels)
-		{
-			double actual = 0;
-			int index = 0;
-
-			foreach (UIElement uie in Children)
-			{
-				if (uie.GetType() != typeof(Character))
-					continue;
-
-				Character c = (Character)uie;
-
-				index = (widthInPixels >= (actual + c.ActualWidth / 2)) ? index + 1 : index;
-				actual += c.ActualWidth;
-
-				if (actual >= widthInPixels)
-					break;
-			}
-
-			return index;
-		}
+		public int SelfIndex { get; set; }
 
 		public Number Number
 		{
 			get
 			{
-				return (Number)Controller.Instance.NumberPanel.Children[selfIndex];
+				return (Number)Controller.Instance.NumberPanel.Children[SelfIndex];
 			}
 		}		
 		
@@ -141,20 +39,81 @@ namespace CodeBox.Core.Elements
 			get { return (Children.Count == 0) ? 0 : Children.Count - 1; }
 		}
 
-		public List<Character> Characters
+		public IEnumerable<Character> Characters
 		{
 			get
 			{
-				List<Character> chars = new List<Character>();
-
-				foreach (UIElement child in Children)
+				foreach (var child in Children)
 				{
-					if (child.GetType() == typeof(Character))
-						chars.Add((Character)child);
+					if (child is Character)
+						yield return (child as Character);
+				}
+			}
+		}
+
+		public PaperLine()
+		{
+			// settings
+			Orientation = Orientation.Horizontal;
+			HorizontalAlignment = HorizontalAlignment.Stretch;
+			Margin = new Thickness(0, 0, 0, 0);
+			Height = 15;
+			CurrentBrush = Background = new SolidColorBrush(Colors.White);
+
+			// events
+			MouseLeftButtonDown += PaperLineMouseDown;
+			MouseMove += PaperLineMouseMove;
+			MouseLeftButtonUp += PaperLineMouseUp;
+			MouseEnter += PaperLineMouseEnter;
+			MouseLeave += PaperLineMouseLeave;
+		}
+
+		public void PaperLineMouseLeave(object sender, MouseEventArgs e)
+		{
+			if (SelfIndex != -1)
+			{
+				Background = CurrentBrush;
+				Number.UnHover();
+			}
+		}
+
+		public void PaperLineMouseEnter(object sender, MouseEventArgs e)
+		{
+			if (SelfIndex != -1)
+			{
+				if (Controller.Instance.Paper.IsMouseDown && !(sender is Number))
+				{
+					Controller.Instance.Paper.HighlightUpto(SelfIndex, 0);
 				}
 
-				return chars;
+				Background = new SolidColorBrush(Configuration.HoverColor);
+				Number.Hover();
 			}
+		}
+
+		private void PaperLineMouseDown(object sender, MouseButtonEventArgs e)
+		{
+			int charIndex = GetCharIndexFromWidth(e.GetPosition(this).X);
+
+			if ((charIndex == LastIndex) && (Controller.Instance.Paper.Line != SelfIndex)) /* HAAACK, and works! (if you click on an unfocused line in an area with no charachters, it sets the cursor before the last char, not after) */
+				charIndex++;
+
+			Controller.Instance.Paper.HighlightFrom(SelfIndex, charIndex);
+			Controller.Instance.Paper.ClickHandledByLine = true;
+		}
+
+		private void PaperLineMouseMove(object sender, MouseEventArgs e)
+		{
+			if (!Controller.Instance.Paper.IsMouseDown)
+				return;
+
+			int charIndex = GetCharIndexFromWidth(e.GetPosition(this).X);
+			Controller.Instance.Paper.HighlightUpto(SelfIndex, charIndex);
+		}
+
+		private void PaperLineMouseUp(object sender, MouseButtonEventArgs e)
+		{
+
 		}
 
 		public void Add(UIElement c)
@@ -179,12 +138,12 @@ namespace CodeBox.Core.Elements
 
 		public PaperLine NextLine()
 		{
-			int index = paper.Children.IndexOf(this);
+			int index = Controller.Instance.Paper.Children.IndexOf(this);
 
-			if (index + 1 >= paper.Children.Count)
+			if (index + 1 >= Controller.Instance.Paper.Children.Count)
 				return null;
 
-			return (PaperLine)paper.Children[index + 1];
+			return (PaperLine)Controller.Instance.Paper.Children[index + 1];
 		}
 
 		public UIElement At(int index)
@@ -211,23 +170,19 @@ namespace CodeBox.Core.Elements
 			return position;
 		}
 
-		public List<Character> GetCharacters(int from, int to)
+		public IEnumerable<Character> GetCharacters(int from, int to)
 		{
-			List<Character> c = new List<Character>();
-
 			if (from < 0)
 				from = 0;
 			else if (to >= Children.Count)
 				to = Children.Count - 1;
 
 			for (; from <= to; from++)
-				if (Children[from].GetType() == typeof(Character))
-					c.Add((Character)Children[from]);
-
-			return c;
+				if (Children[from] is Character)
+					yield return Children[from] as Character;
 		}
 
-		public void AddCharacters(List<Character> chars, int position)
+		public void AddCharacters(IEnumerable<Character> chars, int position)
 		{
 			foreach (var c in chars)
 			{
@@ -235,7 +190,7 @@ namespace CodeBox.Core.Elements
 			}
 		}
 
-		public void RemoveCharacters(List<Character> chars)
+		public void RemoveCharacters(IEnumerable<Character> chars)
 		{
 			foreach (var c in chars)
 				Children.Remove(c);
@@ -256,6 +211,28 @@ namespace CodeBox.Core.Elements
 				Children.Remove(c);
 				newLine.Children.Add(c);
 			}
+		}
+
+		private int GetCharIndexFromWidth(double widthInPixels)
+		{
+			double actual = 0;
+			int index = 0;
+
+			foreach (UIElement uie in Children)
+			{
+				if (uie.GetType() != typeof(Character))
+					continue;
+
+				Character c = (Character)uie;
+
+				index = (widthInPixels >= (actual + c.ActualWidth / 2)) ? index + 1 : index;
+				actual += c.ActualWidth;
+
+				if (actual >= widthInPixels)
+					break;
+			}
+
+			return index;
 		}
 	}
 }

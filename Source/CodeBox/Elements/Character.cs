@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using System.Windows.Threading;
-using CodeBox.Core;
 using CodeBox.Core.Utilities;
 using CodeBox.CodeLexer;
 
@@ -21,8 +18,32 @@ namespace CodeBox.Core.Elements
 		public const double CHAR_WIDTH = 8.0;
 		public const double CHAR_HEIGHT = 15.0;
 
-		public int Line { get; set; }
-		public int Position { get; set; }
+		public int Line
+		{
+			get
+			{
+				if (ParentToken != null)
+					return ParentToken.Line - 1;
+				
+				if (Parent as PaperLine != null)
+					return (Parent as PaperLine).SelfIndex;
+
+				return 0;
+			}
+		}
+		public int Position
+		{
+			get
+			{
+				if (ParentToken != null)
+					return ParentToken.Position - 1;
+
+				if (Parent as PaperLine != null)
+					return (Parent as PaperLine).Children.IndexOf(this) - 1;
+
+				return 0;
+			}
+		}
 		public char Char
 		{
 			get
@@ -68,7 +89,7 @@ namespace CodeBox.Core.Elements
 		private Path path;
 		#endregion
 
-		public Character(char c, int line, int position)
+		public Character(char c)
 		{
 			#region set defalt properties
 			Height = CHAR_HEIGHT;
@@ -111,8 +132,6 @@ namespace CodeBox.Core.Elements
 			Children.Add(path);
 			#endregion
 
-			Line = line;
-			Position = position;
 			CurrentBackgroundState = BackgroundState.Transparent;
 
 			DoubleClickHelper.Attach(this, OnDoubleClick);
@@ -210,9 +229,9 @@ namespace CodeBox.Core.Elements
 
 	public static class ListOfCharacterExtension
 	{
-		public static string GetText(this List<Character> chars)
+		public static string GetText(this IEnumerable<Character> chars)
 		{
-			StringBuilder result = new StringBuilder();
+			var result = new StringBuilder();
 
 			foreach (var c in chars)
 				result.Append(c.Char);

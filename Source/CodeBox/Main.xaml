@@ -32,9 +32,7 @@
 					</StackPanel>
 				</Border>
 				
-				<Elements:Paper x:Name="paper" Grid.Column="1" Grid.Row="1" Background="White" Orientation="Vertical">
-					<Elements:PaperLine />
-				</Elements:Paper>
+				<Elements:Paper x:Name="paper" Grid.Column="1" Grid.Row="1" Background="White" Orientation="Vertical" />
 			</Grid>
 			
 			<SyntaxValidator1:ErrorTooltip x:Name="ErrorTooltip" Visibility="Collapsed" />

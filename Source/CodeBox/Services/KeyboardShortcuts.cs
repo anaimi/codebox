@@ -40,18 +40,17 @@ namespace CodeBox.Core.Services
 
      			if (Controller.Instance.Paper.Position != Controller.Instance.Paper.CurrentLine.LastIndex)
      			{
-     				Controller.Instance.Paper.Children.Insert(Controller.Instance.Paper.Line + 1, new PaperLine());
+     				Controller.Instance.Paper.InsertLine(Controller.Instance.Paper.Line + 1, new PaperLine());
      				var prevLine = Controller.Instance.Paper.CurrentLine;
      				var newLine = Controller.Instance.Paper.NextLine;
      				prevLine.MigrateCharacters(newLine, Controller.Instance.Paper.Position, prevLine.LastIndex);
      			}
      			else
      			{
-     				Controller.Instance.Paper.Children.Insert(Controller.Instance.Paper.Line + 1, new PaperLine());
+     				Controller.Instance.Paper.InsertLine(Controller.Instance.Paper.Line + 1, new PaperLine());
      			}
 
      			Controller.Instance.Paper.UpdateCaret(Controller.Instance.Paper.Line + 1, 0);
-     			Controller.Instance.UpdatePositions();
 
      			#region add tabs as much as prev line
      			int numberOfTabs = 0;
@@ -64,12 +63,13 @@ namespace CodeBox.Core.Services
      			}
      			while (numberOfTabs > 0)
      			{
-     				Controller.Instance.Paper.CurrentLine.Add(new Character('\t', Controller.Instance.Paper.Line, Controller.Instance.Paper.Position), Controller.Instance.Paper.Position);
+     				Controller.Instance.Paper.CurrentLine.Add(new Character('\t'), Controller.Instance.Paper.Position);
      				Controller.Instance.Paper.Position++;
      				numberOfTabs--;
      			}
      			#endregion
-				Controller.Instance.TextCompletelyChanged();
+     			
+     			Controller.Instance.TextCompletelyChanged();
      			return KeyboardBubbling.Stop;
      		});
 			#endregion
@@ -94,10 +94,11 @@ namespace CodeBox.Core.Services
      				Controller.Instance.Paper.RemoveCaret();
 
 					var pos = Controller.Instance.Paper.PrevLine.LastIndex;
+     				var prevLineCharCount = Controller.Instance.Paper.PrevLine.Children.Count;
 					Controller.Instance.Paper.CurrentLine.MigrateCharacters(Controller.Instance.Paper.PrevLine, 0, Controller.Instance.Paper.CurrentLine.LastIndex);
 					
      				Controller.Instance.Paper.RemoveLine(Controller.Instance.Paper.Line);
-     				Controller.Instance.Paper.UpdateCaret(Controller.Instance.Paper.Line - 1, pos + 1);
+					Controller.Instance.Paper.UpdateCaret(Controller.Instance.Paper.Line - 1, (prevLineCharCount == 0) ? 0 : pos + 1);
      			}
      			else
      			{
@@ -113,10 +114,9 @@ namespace CodeBox.Core.Services
      					Controller.Instance.Paper.UpdateCaret(charachter.Line - 1, charachter.Position - 1);
      				}
      			}
-
-     			Controller.Instance.UpdatePositions();
+				
      			Controller.Instance.Paper.UpdateCaretPosition();
-     			Controller.Instance.CurrentLineTextUpdated();
+     			Controller.Instance.TextCompletelyChanged();
      			return KeyboardBubbling.Continue;
      		});
 			#endregion
@@ -155,10 +155,9 @@ namespace CodeBox.Core.Services
 						Controller.Instance.Paper.UpdateCaret(charachter.Line - 1, charachter.Position - 1);       				
          			}
          		}
-
-         		Controller.Instance.UpdatePositions();
+				
          		Controller.Instance.Paper.UpdateCaretPosition();
-         		Controller.Instance.CurrentLineTextUpdated();
+         		Controller.Instance.TextCompletelyChanged();
          		return KeyboardBubbling.Continue;
          	});
 			#endregion
@@ -192,7 +191,7 @@ namespace CodeBox.Core.Services
          					if (block.Position == 0)
          					{
          						var line = Controller.Instance.Paper.LineAt(block.Line);
-         						var _char = new Character('\t', block.Line, 0);
+         						var _char = new Character('\t');
          						_char.HighlightBlue();
          						line.Add(_char, 0);
          						newBlocks.Add(_char);
@@ -200,17 +199,16 @@ namespace CodeBox.Core.Services
          				}
 
          				Controller.Instance.Paper.HighlightedBlocks.AddRange(newBlocks);
-         				Controller.Instance.UpdatePositions();
 						Controller.Instance.TextCompletelyChanged();
          			}
          			else
          			{
-         				Controller.Instance.AddChar('\t');
+         				Controller.Instance.AddText("\t");
          			}
          		}
          		else
          		{
-         			Controller.Instance.AddChar('\t');
+					Controller.Instance.AddText("\t");
          		}
 
          		Controller.Instance.KeepFocus = true;
@@ -437,7 +435,7 @@ namespace CodeBox.Core.Services
 				 // remove line (if it is not the only line)
 				 if (Controller.Instance.Paper.Children.Count > 1)
 				 {
-					 Controller.Instance.Paper.Children.RemoveAt(Controller.Instance.Paper.Line);
+					 Controller.Instance.Paper.RemoveLine(Controller.Instance.Paper.Line);
 					 Controller.Instance.Paper.UpdateCaretPosition();
 				 }
 
@@ -559,7 +557,7 @@ namespace CodeBox.Core.Services
          		if (Controller.Instance.IsShiftDown)
          			return KeyboardBubbling.Continue;
 
-         		Controller.Instance.AddChar('=');
+				Controller.Instance.AddText("=");
          		return KeyboardBubbling.Continue;
          	});
 			#endregion

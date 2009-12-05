@@ -79,7 +79,7 @@ namespace CodeBox.Core.Services.AutoComplete
 
 		public void Initialize()
 		{
-			Controller.Instance.OnTextChanged += Configuration.AutoCompleter.KeyDown;
+			Controller.Instance.AddTextChangeObserver(0, Configuration.AutoCompleter.KeyDown);
 			Controller.Instance.Paper.MouseLeftButtonDown += (e, s) => { HideList(); Controller.Instance.GetFocus(); };
 			
 			// on key escape

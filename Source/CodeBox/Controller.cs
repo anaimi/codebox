@@ -5,7 +5,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using CodeBox.Core.Services;
 using CodeBox.Core.Utilities;
-using System.Windows.Threading;
 using CodeBox.CodeLexer;
 using CodeBox.Core.Elements;
 using CodeBox.Core.Services.AutoComplete;
@@ -31,7 +30,8 @@ namespace CodeBox.Core
 			set
 			{
 				Paper.Text = value;
-				TextChanged();
+				TextCompletelyChanged();
+				Paper.UpdateLinesIndices(0);
 			}
 		}
 		public bool KeepFocus { get; set; }
@@ -39,14 +39,13 @@ namespace CodeBox.Core
 		public bool IsCtrlDown;
 		public bool IsEditable = true;
 		
-		public event Action OnTextChanged;
 		public event Action OnMouseDown;
 		public event Action OnMouseUp;
 		public event Action<double> OnScroll;
+		public List<EventObserver> TextChangeObservers;
 		public List<IService> Services;
 
 		private TextBox textBox;
-		private DispatcherTimer textChangedObserversTimer;
 		private List<Character> searchText;
 		private Dictionary<Key, List<Func<KeyEventArgs, KeyboardBubbling>>> onKeyDown;
 		private Dictionary<Key, List<Func<KeyEventArgs, KeyboardBubbling>>> onKeyUp;
@@ -71,22 +70,11 @@ namespace CodeBox.Core
 			Paper = paper;
 			NumberPanel = numberPanel;
 			this.textBox = textBox;
-						
+			
 			Services = new List<IService>();
+			TextChangeObservers = new List<EventObserver>();
 			instance = this;
 			paper.UpdateCaretPosition();
-
-			// set parsing timer
-			if (Configuration.DurationBeforeTextChangedCallback > 0)
-			{
-				textChangedObserversTimer = new DispatcherTimer();
-				textChangedObserversTimer.Interval = TimeSpan.FromSeconds(Configuration.DurationBeforeTextChangedCallback);
-				textChangedObserversTimer.Tick += (o, e) => TextChangedNotiftyObservers();
-			}
-			else
-			{
-				TextChangedNotiftyObservers();
-			}
 			
 			// reset paper
 			paper.Children.Clear();
@@ -121,17 +109,14 @@ namespace CodeBox.Core
 			Services.Add(UndoRedo.Instance);
 			
 			// initialize services
-			foreach (var service in Services)
-			{
-				service.Initialize();
-			}
+			Services.ForEach(s => s.Initialize());
 		}
 
-		public bool HaveService<Service>() where Service : IService
+		public bool HaveService<T>() where T : IService
 		{
 			foreach (var service in Services)
 			{
-				if (service.GetType() == typeof(Service))
+				if (service is T)
 					return true;
 			}
 
@@ -143,37 +128,14 @@ namespace CodeBox.Core
 			textBox.Focus();
 		}
 		
-		public void AddChar(char keyChar)
-		{
-			if (!IsEditable)
-				return;
-
-			// have highlights? replace
-			Paper.RemoveHighlights();
-			
-			// add it
-			var newChar = new Character(keyChar, Paper.Line, Paper.Position);
-			Paper.CurrentLine.Add(newChar, Paper.Position);
-			Paper.Position++;
-
-			UpdatePositions();
-			CurrentLineTextUpdated();
-		}
-
 		public void AddText(string text)
 		{
-			if (text == null)
+			if (string.IsNullOrEmpty(text))
 				return;
-			
-			if (text.Length == 1)
-			{
-				AddChar(text[0]);
-				return;
-			}
 
 			if (!IsEditable)
 				return;
-
+			
 			// have highlights? replace
 			Paper.RemoveHighlights();
 
@@ -191,20 +153,27 @@ namespace CodeBox.Core
 					pLine = new PaperLine();
 					
 					prevLine.MigrateCharacters(pLine, position + 1, prevLine.LastIndex);
-					Paper.Children.Insert(++line, pLine);
+					Paper.InsertLine(++line, pLine);
 					position = 0;
 				}
 				else if (c == '\r') // becuase nobody like \r
 					continue;
 				else
 				{
-					pLine.Add(new Character(c, line, position), position++);
+					pLine.Add(new Character(c), position++);
 				}
 			}
-
+			
+			// record updated lines
+			var updatedLines = new List<int>();
+			for(int i = Paper.Line; i <= line; i++)
+			{
+				updatedLines.Add(i);
+			}
+			
 			// update
 			Paper.UpdateCaret(line, position);
-			TextCompletelyChanged();
+			LinesTextUpdated(updatedLines);
 		}
 
 		#region keyboard handling
@@ -277,27 +246,16 @@ namespace CodeBox.Core
 				OnMouseUp();
 		}
 		#endregion
-
-		public void UpdatePositions()
-		{
-			for (int lineNum = 0; lineNum < Paper.Children.Count; lineNum++)
-			{
-				var line = Paper.Children[lineNum] as PaperLine;
-
-				for (int charNum = 0; charNum < line.Characters.Count; charNum++)
-				{
-					line.Characters[charNum].Line = lineNum;
-					line.Characters[charNum].Position = charNum;
-				}
-			}
-		}
 		
 		#region TextChanged and parsing
 		public void LinesTextUpdated(IEnumerable<int> lines)
 		{
-			foreach(var line in lines.Distinct())
+			var maxLineNumber = Paper.Children.Count - 1;
+			var lineNumbers = lines.Where(n => n >= 0 && n <= maxLineNumber).Distinct();
+
+			foreach (var line in lineNumbers)
 				TokenizeLine(line);
-			
+
 			TextChanged();
 		}
 		
@@ -318,21 +276,14 @@ namespace CodeBox.Core
 			// set token before caret
 			TokenBeforeCaret = GeTokenBeforeCaret();
 
-			// call observers (after a delay)
-			if (textChangedObserversTimer.IsEnabled)
-				textChangedObserversTimer.Stop();
-
-			textChangedObserversTimer.Start();
+			// notify observers
+			foreach(var observer in TextChangeObservers)
+				observer.EventOccured();
 		}
 		
-		public void TextChangedNotiftyObservers()
+		public void AddTextChangeObserver(int delay, Action handler)
 		{
-			if (textChangedObserversTimer != null)
-				textChangedObserversTimer.Stop();
-
-			// call observers
-			if (OnTextChanged != null)
-				OnTextChanged();
+			TextChangeObservers.Add(new EventObserver(delay, handler));
 		}
 		
 		private void TokenizeAllText()
@@ -343,8 +294,6 @@ namespace CodeBox.Core
 			// populate token chars for each token
 			TokenChars = new Dictionary<Token, TokenChars>();
 			TokenList.Tokens.ForEach(t => TokenChars.Add(t, new TokenChars(t)));
-			
-			System.Diagnostics.Debug.WriteLine("Tokenized: Complete");
 		}
 		
 		private void TokenizeLine(int line)
@@ -357,34 +306,35 @@ namespace CodeBox.Core
 			}
 			
 			// get text of line
-			var updatedLine = Paper.Lines[line].Characters.GetText();
+			var updatedLine = Paper.Lines.ElementAt(line).Characters.GetText();
+			
+			// skip if empty line
+			if (updatedLine.IsNullOrEmptyOrWhitespace())
+				return;
 
-			if (!string.IsNullOrEmpty(updatedLine))
+			// generate sub token list
+			var subTokenList = new TokenList(updatedLine, Configuration.Keywords, line + 1, 1);
+
+			// get first token
+			var firstToken = TokenList.Tokens.FirstOrDefault(t => t.Line >= Paper.Line + 1);
+
+			// get startIndex
+			var startIndex = (firstToken == null) ? TokenList.Tokens.Count : TokenList.Tokens.IndexOf(firstToken);
+
+			// remove tokens of the same line from original token list
+			var oldTokens = TokenList.Tokens.Where(t => t.Line == Paper.Line + 1).ToList();
+			foreach (var token in oldTokens)
 			{
-				// generate sub token list
-				var subTokenList = new TokenList(updatedLine, Configuration.Keywords, Paper.Line + 1, 1);
-
-				// remove tokens of the same line from original token list
-				var oldTokens = TokenList.Tokens.Where(t => t.Line == Paper.Line + 1).ToList();
-				foreach (var token in oldTokens)
-				{
-					TokenList.Tokens.Remove(token);
-					TokenChars.Remove(token);
-				}
-
-				// add new sub tokens, sort and reset
-				TokenList.Tokens.AddRange(subTokenList.Tokens);
-				subTokenList.Tokens.ForEach(t => TokenChars.Add(t, new TokenChars(t)));
-				TokenList.Tokens.Sort();
-				TokenList.GotoToken(TokenList.Tokens.First());
-
-				System.Diagnostics.Debug.WriteLine("Tokenized: Line " + line);
+				TokenList.Tokens.Remove(token);
+				TokenChars.Remove(token);
 			}
-		}
-		
-		internal void UpdateTextChangeNotificationSpeed()
-		{
-			textChangedObserversTimer.Interval = TimeSpan.FromSeconds(Configuration.DurationBeforeTextChangedCallback);
+
+			// add new sub tokens
+			TokenList.Tokens.InsertRange(startIndex, subTokenList.Tokens);
+			subTokenList.Tokens.ForEach(t => TokenChars.Add(t, new TokenChars(t)));
+
+			//reset
+			TokenList.GotoToken(TokenList.Tokens.First());
 		}
 		#endregion
 		
@@ -477,4 +427,6 @@ namespace CodeBox.Core
 				OnScroll(newVal);
 		}
 	}
+	
+	
 }

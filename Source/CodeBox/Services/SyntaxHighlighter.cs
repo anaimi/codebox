@@ -30,7 +30,7 @@ namespace CodeBox.Core.Services
 		
 		public void Initialize()
 		{
-			Controller.Instance.OnTextChanged += Highlight;
+			Controller.Instance.AddTextChangeObserver(0, Highlight);
 		}
 		
 		public void Highlight()
