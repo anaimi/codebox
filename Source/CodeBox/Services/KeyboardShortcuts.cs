@@ -390,6 +390,7 @@ namespace CodeBox.Core.Services
 				// set caret at new line and original position
 				Controller.Instance.Paper.UpdateCaret(originalLine + 1, originalPosition);
 
+				Controller.Instance.TextCompletelyChanged();
 				return KeyboardBubbling.Continue;
 			 });
 			#endregion

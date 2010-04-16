@@ -228,9 +228,9 @@ namespace CodeBox.CodeLexer
 						case '!':
 						case '?':
 						case '=':
-							indices.Add(new Index(position.Line, position.CharPosition));
+							indices.Add(new Index(position.LineNumber, position.CharNumber));
 							tokens.Add(new Token(TokenType.OPERATOR, code[position.CurrentIndex].ToString(), indices));
-							position.CurrentIndex++;
+							position.MoveIndex();
 							break;
 
 						case '(':
@@ -250,9 +250,9 @@ namespace CodeBox.CodeLexer
 						case '#':
 						case '@':
 						case '~':
-							indices.Add(new Index(position.Line, position.CharPosition));
+							indices.Add(new Index(position.LineNumber, position.CharNumber));
 							tokens.Add(new Token(TokenType.SYMBOL, code[position.CurrentIndex].ToString(), indices));
-							position.CurrentIndex++;
+							position.MoveIndex();
 							break;
 
 						case '0':
@@ -283,9 +283,9 @@ namespace CodeBox.CodeLexer
 
 							while ((code.Length > position.CurrentIndex) && (Char.IsLetterOrDigit(code[position.CurrentIndex])))
 							{
-								indices.Add(new Index(position.Line, position.CharPosition));
+								indices.Add(new Index(position.LineNumber, position.CharNumber));
 								identifier += code[position.CurrentIndex];
-								position.CurrentIndex++;
+								position.MoveIndex();
 							}
 
 							if (IsKeyword(identifier))
@@ -303,7 +303,7 @@ namespace CodeBox.CodeLexer
 			// eat whitespace
 			while ((code.Length > position.CurrentIndex) && (Char.IsWhiteSpace(code[position.CurrentIndex])))
 			{
-				position.CurrentIndex++;
+				position.MoveIndex();
 			}
 		}
 
@@ -317,11 +317,11 @@ namespace CodeBox.CodeLexer
 				{
 					while ((code.Length > position.CurrentIndex) && (code[position.CurrentIndex] != '\n'))
 					{
-						indices.Add(new Index(position.Line, position.CharPosition));
-						position.CurrentIndex++;
+						indices.Add(new Index(position.LineNumber, position.CharNumber));
+						position.MoveIndex();
 					}
 
-					position.CurrentIndex++;
+					position.MoveIndex();
 				}
 				else if (code[position.CurrentIndex + 1] == '*')
 				{
@@ -329,17 +329,19 @@ namespace CodeBox.CodeLexer
 					{
 						if (code.Length > position.CurrentIndex + 1 && code[position.CurrentIndex] == '*' && code[position.CurrentIndex + 1] == '/')
 						{
-							indices.Add(new Index(position.Line, position.CharPosition));
-							indices.Add(new Index(position.Line, position.CharPosition + 1));
-							position.CurrentIndex += 2;
+							indices.Add(new Index(position.LineNumber, position.CharNumber));
+							indices.Add(new Index(position.LineNumber, position.CharNumber + 1));
+							position.MoveIndex();
+							position.MoveIndex();
 							break;
 						}
-						else if (code.Length > position.CurrentIndex && code[position.CurrentIndex] != '\n')
+						
+						if (code.Length > position.CurrentIndex && code[position.CurrentIndex] != '\n')
 						{
-							indices.Add(new Index(position.Line, position.CharPosition));
+							indices.Add(new Index(position.LineNumber, position.CharNumber));
 						}
 
-						position.CurrentIndex++;
+						position.MoveIndex();
 					}
 				}
 			}
@@ -372,22 +374,22 @@ namespace CodeBox.CodeLexer
 			while ((code.Length > position.CurrentIndex) && (Char.IsDigit(code[position.CurrentIndex])))
 			{
 				mantissa = (mantissa * 10.0) + (code[position.CurrentIndex] - '0');
-				indices.Add(new Index(position.Line, position.CharPosition));
-				position.CurrentIndex++;
+				indices.Add(new Index(position.LineNumber, position.CharNumber));
+				position.MoveIndex();
 			}
 
 			// Now look for the fractional part
 			if ((code.Length > position.CurrentIndex) && (code[position.CurrentIndex] == '.'))
 			{
-				indices.Add(new Index(position.Line, position.CharPosition));
-				position.CurrentIndex++;
+				indices.Add(new Index(position.LineNumber, position.CharNumber));
+				position.MoveIndex();
 				double t = .1;
 
 				while ((code.Length > position.CurrentIndex) && (Char.IsDigit(code[position.CurrentIndex])))
 				{
-					indices.Add(new Index(position.Line, position.CharPosition));
+					indices.Add(new Index(position.LineNumber, position.CharNumber));
 					fraction = fraction + (t * (code[position.CurrentIndex] - '0'));
-					position.CurrentIndex++;
+					position.MoveIndex();
 					t = t / 10.0;
 				}
 			}
@@ -401,20 +403,20 @@ namespace CodeBox.CodeLexer
 		{
 			string result = "";
 
-			indices.Add(new Index(position.Line, position.CharPosition));
-			position.CurrentIndex++;
+			indices.Add(new Index(position.LineNumber, position.CharNumber));
+			position.MoveIndex();
 
 			while ((code.Length > position.CurrentIndex) && (code[position.CurrentIndex] != '"'))
 			{
 				result += code[position.CurrentIndex];
-				indices.Add(new Index(position.Line, position.CharPosition));
-				position.CurrentIndex++;
+				indices.Add(new Index(position.LineNumber, position.CharNumber));
+				position.MoveIndex();
 			}
 
 			if (code.Length > position.CurrentIndex) // record last (")
 			{
-				indices.Add(new Index(position.Line, position.CharPosition));
-				position.CurrentIndex++;
+				indices.Add(new Index(position.LineNumber, position.CharNumber));
+				position.MoveIndex();
 			}
 
 			return result;
@@ -434,48 +436,53 @@ namespace CodeBox.CodeLexer
 			public Position(string code, int startLine, int startPosition)
 			{
 				this.code = code;
+				
 				_startLine = startLine;
 				_startPosition = startPosition;
+
+				_line = _startLine;
+				_pos = _startPosition;
 			}
 			
 			private string code;
 			private int _startLine, _startPosition;
+			private int _currentIndex;
 			private int _line, _pos;
 
-			public int CurrentIndex;
-			public int CharPosition
+			public int CurrentIndex
+			{
+				get { return _currentIndex; }
+			}
+			public int CharNumber
 			{
 				get
 				{
-					CalculatePosition();
 					return _pos;
 				}
 			}
-			public int Line
+			public int LineNumber
 			{
 				get
 				{
-					CalculatePosition();
 					return _line;
 				}
 			}
-
-			private void CalculatePosition()
+			
+			public void MoveIndex()
 			{
-				_line = _startLine;
-				_pos = _startPosition;
+				_currentIndex++;
+				
+				if (_currentIndex >= code.Length)
+					return;
 
-				for (int i = 0; i < CurrentIndex; i++)
+				if (code[_currentIndex] == '\n')
 				{
-					if (code[i] == '\n')
-					{
-						_line++;
-						_pos = _startPosition;
-					}
-					else
-					{
-						_pos++;
-					}
+					_line++;
+					_pos = _startPosition - 1;
+				}
+				else
+				{
+					_pos++;
 				}
 			}
 		}

@@ -121,6 +121,12 @@ namespace CodeBox.CodeLexer
 		{
 			return string.Format("{0} [{1}, {2}]", Value, Line, Position);
 		}
+		
+		public void UpdateLineNumber(int offset)
+		{
+			foreach(var index in Indices)
+				index.UpdateLineNumber(offset);
+		}
 	}
 
 	public class Index
@@ -132,6 +138,11 @@ namespace CodeBox.CodeLexer
 		{
 			Line = line;
 			Position = pos;
+		}
+		
+		public void UpdateLineNumber(int offset)
+		{
+			Line += offset;
 		}
 
 		public override string ToString()

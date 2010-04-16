@@ -311,24 +311,24 @@ namespace CodeBox.Core
 			// skip if empty line
 			if (updatedLine.IsNullOrEmptyOrWhitespace())
 				return;
-
+			
+			// remove tokens of the same line from original token list
+			var oldTokens = TokenList.Tokens.Where(t => t.Line == line + 1).ToList();
+			foreach (var token in oldTokens)
+			{
+				TokenList.Tokens.Remove(token);
+				TokenChars.Remove(token);
+			}
+			
 			// generate sub token list
 			var subTokenList = new TokenList(updatedLine, Configuration.Keywords, line + 1, 1);
 
 			// get first token
 			var firstToken = TokenList.Tokens.FirstOrDefault(t => t.Line >= Paper.Line + 1);
 
-			// get startIndex
+			// get startIndex of first token (because the new text will take its place ... i.e. it will be pushed)
 			var startIndex = (firstToken == null) ? TokenList.Tokens.Count : TokenList.Tokens.IndexOf(firstToken);
-
-			// remove tokens of the same line from original token list
-			var oldTokens = TokenList.Tokens.Where(t => t.Line == Paper.Line + 1).ToList();
-			foreach (var token in oldTokens)
-			{
-				TokenList.Tokens.Remove(token);
-				TokenChars.Remove(token);
-			}
-
+			
 			// add new sub tokens
 			TokenList.Tokens.InsertRange(startIndex, subTokenList.Tokens);
 			subTokenList.Tokens.ForEach(t => TokenChars.Add(t, new TokenChars(t)));
