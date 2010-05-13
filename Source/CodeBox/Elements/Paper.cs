@@ -9,8 +9,6 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Text;
 using CodeBox.CodeLexer;
-using CodeBox.Core;
-using CodeBox.Core.Elements;
 using CodeBox.Core.Services.AutoComplete;
 
 namespace CodeBox.Core.Elements
@@ -363,6 +361,9 @@ namespace CodeBox.Core.Elements
 		{
 			var newBlocks = new List<Character>();
 
+			if (HighlightToIndex != null && HighlightToIndex.Line == line && HighlightToIndex.Position == pos)
+				return;
+
 			// get blocks
 			int fromLine = 0, fromPos = 0, toLine = 0, toPos = 0;
 			PaperLine pLine;
@@ -409,8 +410,7 @@ namespace CodeBox.Core.Elements
 			UpdateCaret(line, pos);
 
 			// the blocks that are already highlighted, but now need to be unhighlighted
-			var blocksToUnhighlight = HighlightedBlocks.Except(newBlocks).ToList();
-			blocksToUnhighlight.ForEach(b => b.Unhighlight());
+			HighlightedBlocks.Except(newBlocks).ToList().ForEach(b => b.Unhighlight());
 			
 			// highlight the rest
 			HighlightedBlocks = newBlocks;
