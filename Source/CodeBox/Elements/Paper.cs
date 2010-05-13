@@ -472,7 +472,7 @@ namespace CodeBox.Core.Elements
 			if (firstLine != lastLine)
 			{
 				var index = (firstLine.LastIndex == 0) ? 0 : firstLine.LastIndex + 1;
-				var chars = lastLine.GetCharacters(0, lastLine.LastIndex);
+				var chars = lastLine.GetCharacters(0, lastLine.LastIndex).ToList();
 				lastLine.RemoveCharacters(chars);
 				firstLine.AddCharacters(chars, index);
 
