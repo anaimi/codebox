@@ -153,6 +153,9 @@ namespace CodeBox.Core.Elements
 
 		private void UpdateState()
 		{
+			if (CurrentBackgroundState != BackgroundState.Transparent) // prevent changing foreground color when highlighted
+				return;
+						
 			switch (_charType)
 			{
 				case TokenType.IDENTIFIER:

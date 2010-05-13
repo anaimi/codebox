@@ -185,21 +185,40 @@ namespace CodeBox.Core.Services
 
          			if (isMultiLine)
          			{
-         				var newBlocks = new List<Character>();
-         				foreach (var block in Controller.Instance.Paper.HighlightedBlocks)
+						var lines = Controller.Instance.Paper.HighlightedLines.ToList();
+         				
+         				if (Controller.Instance.IsShiftDown)
          				{
-         					if (block.Position == 0)
+         					Controller.Instance.Paper.RemoveCaret();
+         					
+         					foreach(var line in lines.Where(l => l.Children.Count > 0))
          					{
-         						var line = Controller.Instance.Paper.LineAt(block.Line);
-         						var _char = new Character('\t');
-         						_char.HighlightBlue();
-         						line.Add(_char, 0);
-         						newBlocks.Add(_char);
+         						var c = line.At(0) as Character;
+         						
+         						if (c.Char == '\t' || c.Char == ' ')
+         						{
+         							line.Remove(0);
+         							Controller.Instance.Paper.HighlightedBlocks.Remove(c);
+         						}
          					}
+         					
+         					Controller.Instance.Paper.RestoreCaret();
          				}
+         				else
+         				{
+							var newBlocks = new List<Character>();
+							
+							foreach(var line in lines)
+							{
+								var _char = new Character('\t');
+								_char.HighlightBlue();
+								line.Add(_char, 0);
+								newBlocks.Add(_char);
+							}
 
-         				Controller.Instance.Paper.HighlightedBlocks.AddRange(newBlocks);
-						Controller.Instance.TextCompletelyChanged();
+							Controller.Instance.Paper.HighlightedBlocks.AddRange(newBlocks);
+							Controller.Instance.TextCompletelyChanged();
+         				}
          			}
          			else
          			{

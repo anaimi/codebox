@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -138,12 +139,10 @@ namespace CodeBox.Core.Elements
 
 		public PaperLine NextLine()
 		{
-			int index = Controller.Instance.Paper.Children.IndexOf(this);
-
-			if (index + 1 >= Controller.Instance.Paper.Children.Count)
+			if (SelfIndex + 1 >= Controller.Instance.Paper.Children.Count)
 				return null;
 
-			return (PaperLine)Controller.Instance.Paper.Children[index + 1];
+			return Controller.Instance.Paper.Children[SelfIndex + 1] as PaperLine;
 		}
 
 		public UIElement At(int index)
@@ -152,22 +151,6 @@ namespace CodeBox.Core.Elements
 				index = Children.Count - 1;
 
 			return Children[index];
-		}
-
-		public double PositionFromLeftInPixels(UIElement uie)
-		{
-			double position = 0;
-			int index = Children.IndexOf(uie);
-
-			for (int i = 0; i < index; i++)
-			{
-				if (Children[i].GetType() == typeof(Character))
-					position += ((Character)Children[i]).ActualWidth;
-				else if (Children[i].GetType() == typeof(Rectangle))
-					position += ((Rectangle)Children[i]).ActualWidth;
-			}
-
-			return position;
 		}
 
 		public IEnumerable<Character> GetCharacters(int from, int to)
@@ -218,13 +201,8 @@ namespace CodeBox.Core.Elements
 			double actual = 0;
 			int index = 0;
 
-			foreach (UIElement uie in Children)
+			foreach (Character c in Children.Where(uie => uie is Character))
 			{
-				if (uie.GetType() != typeof(Character))
-					continue;
-
-				Character c = (Character)uie;
-
 				index = (widthInPixels >= (actual + c.ActualWidth / 2)) ? index + 1 : index;
 				actual += c.ActualWidth;
 
@@ -233,6 +211,22 @@ namespace CodeBox.Core.Elements
 			}
 
 			return index;
+		}
+
+		public double PositionFromLeftInPixels(UIElement uie)
+		{
+			double position = 0;
+			int index = Children.IndexOf(uie);
+
+			for (int i = 0; i < index; i++)
+			{
+				if (Children[i] is Character)
+					position += (Children[i] as Character).ActualWidth;
+				else if (Children[i] is Rectangle)
+					position += (Children[i] as Rectangle).ActualWidth;
+			}
+
+			return position;
 		}
 	}
 }

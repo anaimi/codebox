@@ -112,6 +112,16 @@ namespace CodeBox.Core.Elements
 				return (HighlightedBlocks.Count != 0);
 			}
 		}
+		public IEnumerable<PaperLine> HighlightedLines
+		{
+			get
+			{
+				foreach(var line in Controller.Instance.Paper.HighlightedBlocks.Select(b => b.Line).Distinct())
+				{
+					yield return LineAt(line);
+				}
+			}
+		}
 
 		public Paper()
 		{

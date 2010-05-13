@@ -17,7 +17,7 @@ namespace CodeBox.Core.Utilities
 			Token = token;
 			Characters = GetCharsByIndices(token.Indices);
 
-			foreach (Character c in Characters)
+			foreach (var c in Characters)
 			{
 				c.ParentToken = token;
 			}
